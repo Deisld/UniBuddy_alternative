@@ -28,7 +28,7 @@ const photoDefs = [
   { id: 2, titleKey: "photo_library",  tagKey: "tag_academic", fileName: "Academic.jpg" },
   { id: 3, titleKey: "photo_path",     tagKey: "tag_nature",   fileName: "Nature.jpg"   },
   { id: 4, titleKey: "photo_teaching", tagKey: "tag_building", fileName: "Building.jpg" },
-  { id: 5, titleKey: "photo_sports",   tagKey: "tag_sports",   fileName: "Sports.jpg"   },
+  { id: 5, titleKey: "photo_sports",   tagKey: "tag_sports",   fileName: "Gym.jpg"      },
 ];
 
 const campusMapHotspots = [
@@ -751,9 +751,6 @@ export function PicturesAndMapScreen() {
           />
           <div style={{ position: "absolute", top: "10px", left: "10px", backgroundColor: C.yellow, border: `2px solid ${C.navy}`, borderRadius: "8px", padding: "2px 8px", fontSize: "11px", fontWeight: 900, color: C.navy, boxShadow: `2px 2px 0 ${C.navy}` }}>
             {t(photoDefs[cur].tagKey)}
-          </div>
-          <div style={{ position: "absolute", bottom: "0", left: "0", right: "0", padding: "10px 14px", background: "linear-gradient(transparent, rgba(14,27,77,0.55))" }}>
-            <span style={{ fontSize: "14px", fontWeight: 800, color: C.white }}>{t(photoDefs[cur].titleKey)}</span>
           </div>
           <button onClick={prev} style={{ position: "absolute", left: "8px", top: "50%", transform: "translateY(-50%)", width: "30px", height: "30px", backgroundColor: C.white, border: `2px solid ${C.navy}`, borderRadius: "8px", boxShadow: `2px 2px 0 ${C.navy}`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <IconChevronLeft size={16} />
