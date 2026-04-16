@@ -17,33 +17,20 @@ export function PhoneShell({
 }) {
   return (
     <div
-      className="flex items-center justify-center min-h-screen"
-      style={{ backgroundColor: "#A8D4FF" }}
+      className="relative flex min-h-screen w-full flex-col overflow-hidden"
+      style={{
+        minHeight: "100dvh",
+        backgroundColor: bg,
+        fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "env(safe-area-inset-left)",
+        paddingRight: "env(safe-area-inset-right)",
+      }}
     >
-      {/* Outer frame: comic hard-shadow */}
-      <div
-        style={{
-          borderRadius: "36px",
-          border: "3px solid #0E1B4D",
-          boxShadow: "6px 6px 0px #0E1B4D",
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-        <div
-          className="relative w-full flex flex-col overflow-hidden"
-          style={{
-            width: "390px",
-            height: "844px",
-            backgroundColor: bg,
-            fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-          }}
-        >
-          {children}
-          {/* ── Global Camera Overlay ── */}
-          <CameraOverlay />
-        </div>
-      </div>
+      {children}
+      {/* ── Global Camera Overlay ── */}
+      <CameraOverlay />
     </div>
   );
 }
