@@ -2,6 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { PhoneShell, StatusBar, ComicCard, Burst } from "./PhoneShell";
 import { BottomNav } from "./BottomNav";
 import { IconBack, IconChevronLeft, IconChevronRight, IconPin, IconNavigation, IconChevronRight as IconArrow } from "./ComicIcons";
@@ -13,6 +16,12 @@ const C = {
   ice: "#DCF0FF", cream: "#FFFBF0", yellow: "#FFD93D", coral: "#FF6B6B",
   mint: "#5EEAA8", purple: "#7B5CF5", white: "#FFFFFF",
 };
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 const photoDefs = [
   { id: 1, titleKey: "photo_square",   tagKey: "tag_square"   },
@@ -356,6 +365,8 @@ export function PicturesAndMapScreen() {
 
   const activeLocation = campusLocationInfo[activeHotspotId];
   const XJTLU_CENTER: [number, number] = [31.2718, 120.7415];
+  const LIVE_MAP_DEFAULT_ZOOM = 15;
+  const LIVE_MAP_MAX_ZOOM = 18;
 
   useEffect(() => {
     setLocationStatus(mapCopy.startLocating);
@@ -365,9 +376,14 @@ export function PicturesAndMapScreen() {
     if (leafletMapRef.current) return leafletMapRef.current;
     if (!leafletHostRef.current) return null;
 
-    const map = L.map(leafletHostRef.current, { scrollWheelZoom: true }).setView(XJTLU_CENTER, 16);
+    const map = L.map(leafletHostRef.current, {
+      scrollWheelZoom: false,
+      zoomControl: true,
+      minZoom: 13,
+      maxZoom: LIVE_MAP_MAX_ZOOM,
+    }).setView(XJTLU_CENTER, LIVE_MAP_DEFAULT_ZOOM);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
+      maxZoom: LIVE_MAP_MAX_ZOOM,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
@@ -383,6 +399,12 @@ export function PicturesAndMapScreen() {
     }
     firstFixRef.current = false;
     setLocationStatus(message);
+  };
+
+  const resetLiveMapView = () => {
+    const map = ensureLeafletMap();
+    if (!map) return;
+    map.setView(XJTLU_CENTER, LIVE_MAP_DEFAULT_ZOOM, { animate: false });
   };
 
   const updateUserPosition = (lat: number, lng: number, accuracy: number) => {
@@ -412,7 +434,7 @@ export function PicturesAndMapScreen() {
     }
 
     if (!firstFixRef.current) {
-      map.setView([lat, lng], Math.max(map.getZoom(), 17));
+      map.setView([lat, lng], Math.max(map.getZoom(), 16));
       firstFixRef.current = true;
     } else {
       map.panTo([lat, lng], { animate: false });
@@ -456,6 +478,7 @@ export function PicturesAndMapScreen() {
     if (mapTab === "live") {
       const map = ensureLeafletMap();
       if (map) {
+        resetLiveMapView();
         window.setTimeout(() => map.invalidateSize(), 120);
       }
     } else {
