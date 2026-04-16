@@ -28,7 +28,7 @@ const photoDefs = [
   { id: 2, titleKey: "photo_library",  tagKey: "tag_academic", fileName: "Academic.jpg" },
   { id: 3, titleKey: "photo_path",     tagKey: "tag_nature",   fileName: "Nature.jpg"   },
   { id: 4, titleKey: "photo_teaching", tagKey: "tag_building", fileName: "Building.jpg" },
-  { id: 5, titleKey: "photo_sports",   tagKey: "tag_sports",   fileName: "Sports.jpg"      },
+  { id: 5, titleKey: "photo_sports",   tagKey: "tag_sports",   fileName: "Gym.jpg"      },
 ];
 
 const campusMapHotspots = [
@@ -55,6 +55,25 @@ const campusMapHotspots = [
 ] as const;
 
 type MapTabKey = "map" | "live";
+type CampusConvenienceItem = { titleKey: string; icon: string; locationsKey: string };
+
+const campusConvenienceItems: CampusConvenienceItem[] = [
+  {
+    titleKey: "map_convenience_sanitary",
+    icon: "🧴",
+    locationsKey: "map_convenience_sanitary_locs",
+  },
+  {
+    titleKey: "map_convenience_umbrella",
+    icon: "☂️",
+    locationsKey: "map_convenience_umbrella_locs",
+  },
+  {
+    titleKey: "map_convenience_smoking",
+    icon: "🚬",
+    locationsKey: "map_convenience_smoking_locs",
+  },
+];
 
 interface CampusLocationInfo {
   type: string;
@@ -908,6 +927,36 @@ export function PicturesAndMapScreen() {
               </div>
             </div>
           )}
+        </ComicCard>
+
+        {/* ── Campus Convenience ── */}
+        <SectionLabel color={C.mint} text={t("map_convenience")} />
+
+        <ComicCard style={{ padding: "12px", backgroundColor: C.white, marginBottom: "18px" }}>
+          <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", marginBottom: "10px" }}>
+            {t("map_convenience_desc")}
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {campusConvenienceItems.map((item) => (
+              <div
+                key={item.titleKey}
+                style={{
+                  border: `2px solid ${C.pale}`,
+                  borderRadius: "12px",
+                  padding: "10px",
+                  backgroundColor: "#F8FCFF",
+                }}
+              >
+                <p style={{ fontSize: "13px", fontWeight: 900, color: C.navy }}>
+                  {item.icon} {t(item.titleKey)}
+                </p>
+                <p style={{ marginTop: "5px", fontSize: "11px", fontWeight: 700, color: "#355087", lineHeight: 1.45 }}>
+                  {t(item.locationsKey)}
+                </p>
+              </div>
+            ))}
+          </div>
         </ComicCard>
 
         {/* ── Classroom Search Section ── */}
