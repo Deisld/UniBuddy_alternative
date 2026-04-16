@@ -26,22 +26,10 @@
 
 ## 快速开始
 
-### 1) 安装依赖
+双击：
 
-```bash
-npm install
 ```
-
-### 2) 启动开发环境
-
-```bash
-npm run dev
-```
-
-### 3) 打包生产版本
-
-```bash
-npm run build
+https://katherine406.github.io/UniBuddy/
 ```
 
 ## 项目结构
