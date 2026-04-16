@@ -15,24 +15,89 @@ const C = {
 };
 
 interface BuildingDef {
-  id: string; nameKey: string; emoji: string; catKey: string;
-  color: string; bg: string; x: number; y: number;
+  id: string;
+  label: string;
+  fullName: string;
+  emoji: string;
+  catKey: string;
+  color: string;
+  bg: string;
+  x: number;
+  y: number;
 }
 
-const buildingDefs: BuildingDef[] = [
-  { id: "gate",     nameKey: "b_gate",     emoji: "🚪", catKey: "cat_entrance",   color: C.navy,   bg: C.ice,     x: 0, y: 0 },
-  { id: "admin",    nameKey: "b_admin",    emoji: "🏛️", catKey: "cat_admin_type", color: C.royal,  bg: C.pale,    x: 1, y: 2 },
-  { id: "library",  nameKey: "b_library",  emoji: "📚", catKey: "cat_academic",   color: C.royal,  bg: C.ice,     x: 3, y: 1 },
-  { id: "square",   nameKey: "b_square",   emoji: "🌸", catKey: "cat_leisure",    color: C.purple, bg: "#E8D5FF", x: 4, y: 3 },
-  { id: "gym",      nameKey: "b_gym",      emoji: "🏃", catKey: "cat_sports",     color: C.navy,   bg: C.yellow,  x: 6, y: 1 },
-  { id: "canteen",  nameKey: "b_canteen",  emoji: "🍜", catKey: "cat_dining",     color: C.royal,  bg: C.pale,    x: 5, y: 4 },
-  { id: "lake",     nameKey: "b_lake",     emoji: "💧", catKey: "cat_nature",     color: C.sky,    bg: C.ice,     x: 2, y: 5 },
-  { id: "art",      nameKey: "b_art",      emoji: "🎨", catKey: "cat_arts",       color: C.purple, bg: "#E8D5FF", x: 7, y: 2 },
-  { id: "research", nameKey: "b_research", emoji: "🔬", catKey: "cat_academic",   color: C.royal,  bg: C.pale,    x: 8, y: 4 },
-  { id: "dorm",     nameKey: "b_dorm",     emoji: "🏠", catKey: "cat_living",     color: C.sky,    bg: C.ice,     x: 1, y: 6 },
-  { id: "history",  nameKey: "b_history",  emoji: "🏺", catKey: "cat_culture",    color: C.purple, bg: "#E8D5FF", x: 3, y: 6 },
-  { id: "maker",    nameKey: "b_maker",    emoji: "⚙️", catKey: "cat_innovation", color: C.navy,   bg: C.mint,    x: 6, y: 5 },
-];
+const FIXED_START_ID = "cb";
+
+// 自定义路线的“地标选择”，改为使用地图里已标注出来的点（与 `PicturesAndMapScreen` 的 pin 对齐）。
+// x/y 使用地图百分比坐标后会重新缩放到一个较小的网格，用于保持距离/时间计算的观感合理。
+const campusMapHotspots = [
+  { id: "ls", label: "LS", fullName: "Life Sciences", x: 32, y: 22, color: "#2d8f47" },
+  { id: "fb", label: "FB", fullName: "Foundation Building", x: 41, y: 42, color: "#5ba3d4" },
+  { id: "cb", label: "CB", fullName: "Central Building", x: 42, y: 56, color: "#17316f" },
+  { id: "sa", label: "SA", fullName: "Science Building A", x: 54, y: 51, color: "#6abf69" },
+  { id: "sb", label: "SB", fullName: "Science Building B", x: 54, y: 55, color: "#6abf69" },
+  { id: "sc", label: "SC", fullName: "Science Building C", x: 54, y: 59, color: "#6abf69" },
+  { id: "sd", label: "SD", fullName: "Science Building D", x: 54, y: 63, color: "#6abf69" },
+  { id: "pb", label: "PB", fullName: "Public Building", x: 61, y: 53, color: "#e8a23a" },
+  { id: "ma", label: "MA", fullName: "Mathematics Building A", x: 67, y: 53, color: "#7e57c2" },
+  { id: "mb", label: "MB", fullName: "Mathematics Building B", x: 67, y: 57, color: "#7e57c2" },
+  { id: "ee", label: "EE", fullName: "Electrical & Electronic", x: 61, y: 63, color: "#26a69a" },
+  { id: "eb", label: "EB", fullName: "Engineering Building", x: 68, y: 61, color: "#3d8f5a" },
+  { id: "ir", label: "IR", fullName: "International Research Centre", x: 54, y: 73, color: "#c62828" },
+  { id: "ia", label: "IA", fullName: "International Academic Exchange", x: 63, y: 75, color: "#ef6c2a" },
+  { id: "hs", label: "HS", fullName: "Humanities & Social Sciences", x: 63, y: 83, color: "#8d6e63" },
+  { id: "es", label: "ES", fullName: "Emerging Sciences", x: 53, y: 92, color: "#d84315" },
+  { id: "db", label: "DB", fullName: "Design Building", x: 65, y: 90, color: "#795548" },
+  { id: "bs", label: "BS", fullName: "International Business School", x: 51, y: 83, color: "#c62828" },
+  { id: "as", label: "AS", fullName: "Film & Creative Technology", x: 45, y: 71, color: "#f9a825" },
+  { id: "gym", label: "GYM", fullName: "Gymnasium", x: 73, y: 75, color: "#263238" },
+] as const;
+
+type CampusMapHotspot = (typeof campusMapHotspots)[number];
+
+const pinMinX = Math.min(...campusMapHotspots.map((p) => p.x));
+const pinMaxX = Math.max(...campusMapHotspots.map((p) => p.x));
+const pinMinY = Math.min(...campusMapHotspots.map((p) => p.y));
+const pinMaxY = Math.max(...campusMapHotspots.map((p) => p.y));
+
+const xRange = pinMaxX - pinMinX || 1;
+const yRange = pinMaxY - pinMinY || 1;
+
+const scaleX = (x: number) => ((x - pinMinX) / xRange) * 8; // 原来的自定义网格大约 0..8
+const scaleY = (y: number) => ((y - pinMinY) / yRange) * 6; // 原来的自定义网格大约 0..6
+
+function emojiForPin(id: string): string {
+  if (id === "gym") return "🏟️";
+  if (id === "fb") return "🏛️";
+  if (id === "cb") return "📍";
+  if (id === "ls") return "🧪";
+  if (id === "as") return "🎬";
+  if (id === "eb") return "🧰";
+  if (id === "ir") return "🔬";
+  return "🏢";
+}
+
+const buildingDefs: BuildingDef[] = [...campusMapHotspots]
+  // 保证起点在 selectedBuildings 的第一位，从而让距离规划从固定起点开始
+  .sort((a: CampusMapHotspot, b: CampusMapHotspot) => {
+    if (a.id === FIXED_START_ID) return -1;
+    if (b.id === FIXED_START_ID) return 1;
+    return 0;
+  })
+  .map((pin: CampusMapHotspot) => {
+    const isSports = pin.id === "gym";
+    return {
+      id: pin.id,
+      label: pin.label,
+      fullName: pin.fullName,
+      emoji: emojiForPin(pin.id),
+      catKey: isSports ? "cat_sports" : "cat_academic",
+      color: pin.color,
+      bg: isSports ? C.yellow : C.ice,
+      x: scaleX(pin.x),
+      y: scaleY(pin.y),
+    };
+  });
 
 const categoryKeys = [
   "cat_all", "cat_academic", "cat_sports", "cat_leisure",
@@ -66,14 +131,14 @@ export function CustomRouteScreen() {
   const navigate = useNavigate();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { t } = useLanguage();
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(["gate"]));
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set([FIXED_START_ID]));
   const [activeCatKey, setActiveCatKey] = useState("cat_all");
   const [phase, setPhase] = useState<Phase>("select");
   const [route, setRoute] = useState<BuildingDef[] | null>(null);
   const [loading, setLoading] = useState(false);
 
   const toggle = (id: string) => {
-    if (id === "gate") return;
+    if (id === FIXED_START_ID) return;
     setSelectedIds((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   };
 
@@ -91,7 +156,7 @@ export function CustomRouteScreen() {
     setLoading(true);
     setTimeout(() => { setRoute(generateRoute(selectedBuildings)); setLoading(false); setPhase("result"); }, 900);
   };
-  const handleReset = () => { setSelectedIds(new Set(["gate"])); setRoute(null); setPhase("select"); };
+  const handleReset = () => { setSelectedIds(new Set([FIXED_START_ID])); setRoute(null); setPhase("select"); };
 
   const total = route ? calcTime(route) : 0;
 
@@ -135,10 +200,10 @@ export function CustomRouteScreen() {
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", minHeight: "28px" }}>
                 {selectedBuildings.map((b) => (
-                  <button key={b.id} onClick={() => toggle(b.id)} style={{ backgroundColor: b.bg, border: `2px solid ${b.color}`, borderRadius: "20px", padding: "2px 10px", display: "flex", alignItems: "center", gap: "4px", cursor: "pointer", boxShadow: `2px 2px 0 ${b.id === "gate" ? "#aaa" : b.color}` }}>
+                  <button key={b.id} onClick={() => toggle(b.id)} style={{ backgroundColor: b.bg, border: `2px solid ${b.color}`, borderRadius: "20px", padding: "2px 10px", display: "flex", alignItems: "center", gap: "4px", cursor: "pointer", boxShadow: `2px 2px 0 ${b.id === FIXED_START_ID ? "#aaa" : b.color}` }}>
                     <span style={{ fontSize: "12px" }}>{b.emoji}</span>
-                    <span style={{ fontSize: "11px", fontWeight: 800, color: b.color }}>{t(b.nameKey)}</span>
-                    {b.id !== "gate" && <span style={{ fontSize: "13px", fontWeight: 900, color: b.color, lineHeight: 1 }}>×</span>}
+                    <span style={{ fontSize: "11px", fontWeight: 800, color: b.color }}>{b.label}</span>
+                    {b.id !== FIXED_START_ID && <span style={{ fontSize: "13px", fontWeight: 900, color: b.color, lineHeight: 1 }}>×</span>}
                   </button>
                 ))}
               </div>
@@ -161,7 +226,7 @@ export function CustomRouteScreen() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "14px" }}>
               {filtered.map((b) => {
                 const isSel = selectedIds.has(b.id);
-                const isFixed = b.id === "gate";
+                const isFixed = b.id === FIXED_START_ID;
                 return (
                   <button
                     key={b.id} onClick={() => toggle(b.id)}
@@ -186,7 +251,7 @@ export function CustomRouteScreen() {
                       <div style={{ position: "absolute", top: "3px", left: "5px", backgroundColor: C.pale, border: `1.5px solid ${C.navy}`, borderRadius: "6px", padding: "0 5px", fontSize: "9px", fontWeight: 900, color: C.navy }}>{t("custom_start_pt")}</div>
                     )}
                     <span style={{ fontSize: "24px" }}>{b.emoji}</span>
-                    <span style={{ fontSize: "11px", fontWeight: 800, color: isSel ? b.color : C.navy, textAlign: "center" }}>{t(b.nameKey)}</span>
+                    <span style={{ fontSize: "11px", fontWeight: 800, color: isSel ? b.color : C.navy, textAlign: "center" }}>{b.label}</span>
                     <span style={{ fontSize: "9px", fontWeight: 600, color: "#4B6898" }}>{t(b.catKey)}</span>
                   </button>
                 );
@@ -263,7 +328,7 @@ export function CustomRouteScreen() {
                     <div style={{ flex: 1, paddingBottom: "8px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                         <span style={{ fontSize: "16px" }}>{b.emoji}</span>
-                        <span style={{ fontSize: "14px", fontWeight: 800, color: C.navy }}>{t(b.nameKey)}</span>
+                        <span style={{ fontSize: "14px", fontWeight: 800, color: C.navy }}>{b.label}</span>
                         <span style={{ backgroundColor: b.bg, border: `1.5px solid ${b.color}`, borderRadius: "6px", padding: "0 6px", fontSize: "10px", fontWeight: 800, color: b.color }}>{t(b.catKey)}</span>
                       </div>
                       {walk && (
@@ -295,7 +360,7 @@ export function CustomRouteScreen() {
                   id: routeId, title: t("custom_my_route").replace("🧩 ", ""),
                   emoji: "🧩", type: "custom",
                   duration: t("custom_walk", { n: total }),
-                  stops: route.map((b) => t(b.nameKey)),
+                  stops: route.map((b) => b.label),
                   bg: C.pale, tagBg: C.sky, tagLabel: t("type_custom"),
                 })}
                 style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: fav ? "#FFF0F0" : C.white, border: `2.5px solid ${C.navy}`, borderRadius: "14px", boxShadow: `4px 4px 0 ${C.navy}`, cursor: "pointer" }}
