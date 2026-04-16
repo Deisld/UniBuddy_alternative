@@ -65,7 +65,7 @@ export function BottomNav({ activeTab }: BottomNavProps) {
       style={{
         backgroundColor: "#FFFBF0",
         borderTop: "2.5px solid #0E1B4D",
-        paddingBottom: "20px",
+        paddingBottom: "max(12px, env(safe-area-inset-bottom))",
       }}
     >
       <div className="flex justify-around items-center pt-2 px-1">
@@ -153,17 +153,6 @@ export function BottomNav({ activeTab }: BottomNavProps) {
         })}
       </div>
 
-      {/* home indicator */}
-      <div className="flex justify-center mt-2">
-        <div
-          className="rounded-full"
-          style={{
-            width: "130px",
-            height: "4px",
-            backgroundColor: "#0E1B4D",
-          }}
-        />
-      </div>
     </div>
   );
 }
