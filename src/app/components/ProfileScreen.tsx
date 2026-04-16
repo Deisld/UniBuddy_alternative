@@ -5,6 +5,7 @@ import { BottomNav } from "./BottomNav";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
+import { STAMP_DEFS } from "../data/stamps";
 import {
   IconStamp, IconHeart, IconSparkle,
   IconClock, IconPin, IconCheck,
@@ -19,21 +20,6 @@ const C = {
   mint: "#5EEAA8", purple: "#7B5CF5", white: "#FFFFFF",
 };
 
-const allStamps = [
-  { id: 1,  emoji: "📚", color: C.royal,  nameKey: "s_library"  },
-  { id: 2,  emoji: "🌸", color: C.purple, nameKey: "s_square"   },
-  { id: 3,  emoji: "🚪", color: C.sky,    nameKey: "s_gate"     },
-  { id: 4,  emoji: "🏃", color: C.navy,   nameKey: "s_gym"      },
-  { id: 5,  emoji: "🍜", color: C.royal,  nameKey: "s_canteen"  },
-  { id: 6,  emoji: "💧", color: C.sky,    nameKey: "s_lake"     },
-  { id: 7,  emoji: "🎨", color: C.purple, nameKey: "s_art"      },
-  { id: 8,  emoji: "🔬", color: C.royal,  nameKey: "s_research" },
-  { id: 9,  emoji: "⚙️", color: C.navy,   nameKey: "s_maker"    },
-  { id: 10, emoji: "🏺", color: C.purple, nameKey: "s_history"  },
-  { id: 11, emoji: "🏠", color: C.sky,    nameKey: "s_dorm"     },
-  { id: 12, emoji: "🏛️", color: C.royal,  nameKey: "s_admin"    },
-];
-
 type TabKey = "stamps" | "favorites";
 
 const typeColor: Record<string, string> = { recommended: C.sky, mystery: C.purple, custom: C.sky };
@@ -43,7 +29,7 @@ const NAME_KEY = "unibuddy_username";
 export function ProfileScreen() {
   const navigate = useNavigate();
   const { favorites, removeFavorite } = useFavorites();
-  const { stampCheckedCount, photos, openCamera } = useCamera();
+  const { stampCheckedCount, photos, openCamera, unlockedStampIds } = useCamera();
   const { lang, toggle, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabKey>("stamps");
 
@@ -74,8 +60,10 @@ export function ProfileScreen() {
     setIsEditingName(false);
   };
 
-  /* first N stamps are checked (4 pre-checked + 1 per photo) */
-  const stamps = allStamps.map((s, i) => ({ ...s, checked: i < stampCheckedCount }));
+  const stamps = STAMP_DEFS.map((stamp) => ({
+    ...stamp,
+    checked: unlockedStampIds.includes(stamp.id),
+  }));
 
   const typeLabel: Record<string, string> = {
     recommended: t("type_recommended"),
@@ -295,24 +283,25 @@ export function ProfileScreen() {
                   style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}
                 >
                   <div style={{
-                    width: "60px", height: "60px", position: "relative",
-                    backgroundColor: stamp.checked ? stamp.color + "18" : "#F8FAFC",
-                    border: stamp.checked ? `2.5px solid ${stamp.color}` : `2.5px dashed ${C.pale}`,
-                    borderRadius: "14px",
-                    boxShadow: stamp.checked ? `3px 3px 0 ${stamp.color}` : "none",
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                    width: "72px", height: "72px", position: "relative",
+                    border: stamp.checked ? `2.5px solid ${C.royal}` : `2.5px dashed ${C.pale}`,
+                    borderRadius: "16px",
+                    boxShadow: stamp.checked ? `3px 3px 0 ${C.royal}` : "none",
                     opacity: stamp.checked ? 1 : 0.3,
+                    overflow: "hidden",
+                    backgroundColor: stamp.checked ? C.white : "#F8FAFC",
                   }}>
-                    <EmojiDisplay emoji={stamp.emoji} size={26} />
+                    <img
+                      src={`${import.meta.env.BASE_URL}${stamp.imagePath}`}
+                      alt={`badge-${stamp.id}`}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
                     {stamp.checked && (
-                      <div style={{ position: "absolute", bottom: "2px", right: "2px", width: "16px", height: "16px", borderRadius: "50%", backgroundColor: stamp.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ position: "absolute", bottom: "3px", right: "3px", width: "18px", height: "18px", borderRadius: "50%", backgroundColor: C.royal, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <IconCheck size={10} color="white" />
                       </div>
                     )}
                   </div>
-                  <span style={{ fontSize: "10px", fontWeight: stamp.checked ? 800 : 500, color: stamp.checked ? stamp.color : "#94A3B8", textAlign: "center" }}>
-                    {t(stamp.nameKey)}
-                  </span>
                 </div>
               ))}
             </div>
