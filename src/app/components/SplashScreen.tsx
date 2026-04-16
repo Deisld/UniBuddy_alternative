@@ -135,20 +135,35 @@ export function SplashScreen() {
           </div>
 
           {/* Title */}
-          <div style={{ marginBottom: "4px" }}>
-            <span
+          <div style={{ marginBottom: "8px" }}>
+            <div
               style={{
-                fontSize: "50px",
-                fontWeight: 900,
-                color: "#2350D8",
-                letterSpacing: "-2px",
-                lineHeight: 1,
-                display: "block",
-                textShadow: "3px 3px 0 #0E1B4D",
+                display: "inline-block",
+                padding: "8px 14px 10px",
+                backgroundColor: "#FFFFFF",
+                borderRadius: "999px",
+                border: "2.5px solid #DDEBFF",
+                boxShadow: "0 4px 10px rgba(14,27,77,0.12)",
               }}
             >
-              UniBuddy
-            </span>
+              <span
+                style={{
+                  fontSize: "52px",
+                  fontWeight: 900,
+                  letterSpacing: "-2px",
+                  lineHeight: 1,
+                  display: "block",
+                  background: "linear-gradient(180deg, #A56AFF 0%, #7A63FF 42%, #4D87FF 72%, #266CF7 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                  WebkitTextStroke: "2px #1E2B8E",
+                  textShadow: "0 2px 0 rgba(30,43,142,0.15)",
+                }}
+              >
+                UniBuddy
+              </span>
+            </div>
           </div>
           <p
             style={{
