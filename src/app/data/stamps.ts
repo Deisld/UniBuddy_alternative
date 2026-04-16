@@ -28,8 +28,8 @@ export const STAMP_DEFS: StampDef[] = [
   { id: 20, imagePath: "birds/IMG_3405.PNG" },
 ];
 
-// Keep 4 badges pre-unlocked to match previous app behavior.
-export const PRE_UNLOCKED_STAMP_IDS = [1, 2, 3, 4];
+// 默认不预解锁任何徽章/打卡点；首次使用时集章进度从 0 开始。
+export const PRE_UNLOCKED_STAMP_IDS: number[] = [];
 
 export const TOTAL_STAMPS = STAMP_DEFS.length;
 
