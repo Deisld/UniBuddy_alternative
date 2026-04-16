@@ -228,9 +228,7 @@ export function HomeScreen() {
                 <p style={{ fontSize: "13px", fontWeight: 900, color: C.navy, marginBottom: "3px" }}>
                   {lang === "zh" ? "新生视角 / 外来访客视角" : "Freshman / Visitor Perspectives"}
                 </p>
-                <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898" }}>
-                  {lang === "zh" ? "系统建议 + 你的补充" : "System suggestions + your notes"}
-                </p>
+                
               </div>
             </div>
             <button
