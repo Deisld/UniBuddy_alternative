@@ -291,7 +291,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
   },
 };
 
-const campusLocationInfoZh: Partial<Record<string, Partial<CampusLocationInfo>>> = {
+const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
   ls: {
     type: "📍 北校区",
     title: "生命科学楼",
@@ -586,16 +586,9 @@ export function PicturesAndMapScreen() {
           liveTip: "Map data is provided by OpenStreetMap. Browser permission and HTTPS are recommended.",
         };
 
-  const activeLocationBase = campusLocationInfo[activeHotspotId];
-  const zhOverride = campusLocationInfoZh[activeHotspotId];
   const activeLocation =
-    lang === "zh"
-      ? {
-          ...activeLocationBase,
-          ...(zhOverride ?? {}),
-          tags: zhOverride?.tags ?? activeLocationBase?.tags ?? [],
-        }
-      : activeLocationBase;
+    (lang === "zh" ? campusLocationInfoZh : campusLocationInfo)[activeHotspotId] ??
+    campusLocationInfo[activeHotspotId];
   const XJTLU_CENTER: [number, number] = [31.2718, 120.7415];
   const LIVE_MAP_DEFAULT_ZOOM = 15;
   const LIVE_MAP_MAX_ZOOM = 18;
