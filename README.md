@@ -27,16 +27,16 @@
 
 ## 快速开始
 
-双击：
+访问：
 
-```
+```text
 https://katherine406.github.io/UniBuddy/
 ```
 
 ## 项目结构
 
 ```text
-Clickable_Interface_Design/
+UniBuddy-main/
 ├─ src/
 │  ├─ app/
 │  │  ├─ components/      # 页面与通用组件
@@ -62,4 +62,3 @@ Clickable_Interface_Design/
 
 当前仓库未声明开源许可证。  
 如果你计划公开分发，建议补充 `LICENSE` 文件（如 MIT）。
-  
