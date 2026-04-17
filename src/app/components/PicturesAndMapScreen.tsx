@@ -68,6 +68,13 @@ const routePointOverrides: Record<string, RouteMapPoint> = {
   ib: { id: "ib", x: 58, y: 74 },
 };
 
+const routePreviewImageByDestination: Record<string, string> = {
+  sa: "sa.png",
+  sb: "sb.png",
+  sc: "sc.png",
+  sd: "sd.png",
+};
+
 function extractBuildingCode(buildingLabel: string) {
   const matched = buildingLabel.match(/\(([A-Za-z]+)\)/);
   return (matched?.[1] ?? "").trim().toLowerCase();
@@ -80,11 +87,6 @@ function getRouteMapPointByCode(buildingCode: string): RouteMapPoint | null {
   const pin = campusMapHotspots.find((h) => h.id === normalized);
   if (!pin) return null;
   return { id: pin.id, x: pin.x, y: pin.y };
-}
-
-function clampMapCenter(v: number, zoom: number) {
-  const edge = 50 / zoom;
-  return Math.min(100 - edge, Math.max(edge, v));
 }
 
 type MapTabKey = "map" | "live";
@@ -1043,22 +1045,16 @@ export function PicturesAndMapScreen() {
             const destinationCode = extractBuildingCode(locale.building);
             const routeStart = getRouteMapPointByCode("cb") ?? { id: "cb", x: 42, y: 56 };
             const routeEnd = getRouteMapPointByCode(destinationCode) ?? routeStart;
-            const linePoints =
-              routeEnd.id !== routeStart.id && Math.abs(routeStart.y - routeEnd.y) > 1.5
-                ? [routeStart, { id: "mid", x: routeEnd.x, y: routeStart.y }, routeEnd]
-                : [routeStart, routeEnd];
             const dx = routeEnd.x - routeStart.x;
             const dy = routeEnd.y - routeStart.y;
-            const centerX = (routeStart.x + routeEnd.x) / 2;
-            const centerY = (routeStart.y + routeEnd.y) / 2;
-            const routeSpread = Math.abs(dx) + Math.abs(dy);
-            const mapZoom = Math.max(2.2, Math.min(3.1, 2.95 - routeSpread / 24));
-            const clampedCenterX = clampMapCenter(centerX, mapZoom);
-            const clampedCenterY = clampMapCenter(centerY, mapZoom);
-            const mapShiftX = 50 - clampedCenterX * mapZoom;
-            const mapShiftY = 50 - clampedCenterY * mapZoom;
             const distanceMeters = Math.max(60, Math.round(Math.hypot(dx, dy) * 8));
             const targetLabel = destinationCode ? destinationCode.toUpperCase() : (lang === "zh" ? "目标楼" : "Destination");
+            const routePreviewFile = routePreviewImageByDestination[destinationCode];
+            const routePreviewSrc = `${import.meta.env.BASE_URL}${routePreviewFile ?? "campus-map.jpg"}`;
+            const routePreviewAlt =
+              routePreviewFile
+                ? `Route from CB to ${targetLabel}`
+                : "XJTLU campus map navigation";
             return (
               <>
                 {/* Nav header */}
@@ -1194,7 +1190,7 @@ export function PicturesAndMapScreen() {
                         <span style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>🗺️ {t("nav_plan_route")}</span>
                       </div>
 
-                      {/* Demo-style zoomed map with route arrow */}
+                      {/* Route preview image */}
                       <ComicCard style={{ padding: 0, overflow: "hidden", marginBottom: "10px" }}>
                         <div
                           style={{
@@ -1212,35 +1208,18 @@ export function PicturesAndMapScreen() {
                           <span style={{ minWidth: "48px", height: "24px", borderRadius: "8px", backgroundColor: C.yellow, border: `2px solid ${C.navy}`, boxShadow: `2px 2px 0 ${C.navy}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 900, color: C.navy, padding: "0 10px" }}>{targetLabel}</span>
                         </div>
                         <div style={{ position: "relative", height: "220px", backgroundColor: "#CFE8FF" }}>
-                          <div
-                            style={{
-                              position: "absolute",
-                              width: `${mapZoom * 100}%`,
-                              height: `${mapZoom * 100}%`,
-                              left: `${mapShiftX}%`,
-                              top: `${mapShiftY}%`,
-                            }}
-                          >
-                            <img
-                              src={`${import.meta.env.BASE_URL}campus-map.jpg`}
-                              alt="XJTLU campus map navigation"
-                              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "saturate(0.95)" }}
-                            />
-                            <svg
-                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-                              viewBox="0 0 100 100"
-                              preserveAspectRatio="none"
-                            >
-                              <polyline
-                                points={linePoints.map((p) => `${p.x},${p.y}`).join(" ")}
-                                stroke="#1F2A44"
-                                strokeWidth="1.25"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                fill="none"
-                              />
-                            </svg>
-                          </div>
+                          <img
+                            src={routePreviewSrc}
+                            alt={routePreviewAlt}
+                            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                          />
+                          {!routePreviewFile && (
+                            <div style={{ position: "absolute", left: "8px", right: "8px", bottom: "8px", borderRadius: "8px", backgroundColor: "rgba(255,255,255,0.92)", border: `1.5px solid ${C.pale}`, padding: "4px 6px", textAlign: "center" }}>
+                              <p style={{ fontSize: "10px", fontWeight: 700, color: "#4B6898" }}>
+                                {lang === "zh" ? "该楼路线图暂未上传，当前显示校园地图" : "Route image not uploaded yet, showing campus map."}
+                              </p>
+                            </div>
+                          )}
                         </div>
 
                         {/* Route stats bar */}
