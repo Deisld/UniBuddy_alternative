@@ -7,7 +7,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { PhoneShell, StatusBar, ComicCard, Burst } from "./PhoneShell";
 import { BottomNav } from "./BottomNav";
-import { IconBack, IconChevronLeft, IconChevronRight, IconPin, IconNavigation, IconChevronRight as IconArrow } from "./ComicIcons";
+import { IconBack, IconChevronLeft, IconChevronRight, IconNavigation, IconChevronRight as IconArrow } from "./ComicIcons";
 import { useLanguage } from "../context/LanguageContext";
 import { classrooms } from "../data/classroomData";
 
@@ -847,9 +847,6 @@ export function PicturesAndMapScreen() {
                 <p style={{ marginTop: "5px", fontSize: "14px", fontWeight: 900, color: C.navy }}>
                   {activeLocation?.title ?? mapCopy.notReady}
                 </p>
-                <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", marginTop: "2px" }}>
-                  {activeLocation?.subtitle ?? ""}
-                </p>
                 <p style={{ marginTop: "7px", fontSize: "11px", lineHeight: 1.45, color: C.navy }}>
                   {activeLocation?.desc ?? ""}
                 </p>
@@ -902,13 +899,6 @@ export function PicturesAndMapScreen() {
                 </button>
               </div>
               <p style={{ marginTop: "8px", fontSize: "11px", fontWeight: 700, color: "#4B6898" }}>{locationStatus}</p>
-
-              <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "8px", padding: "8px 10px", borderRadius: "10px", backgroundColor: C.white, border: `2px solid ${C.pale}` }}>
-                <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: `2px solid ${C.navy}`, backgroundColor: C.royal, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <IconPin size={12} color={C.white} />
-                </div>
-                <p style={{ fontSize: "11px", fontWeight: 700, color: C.navy }}>{mapCopy.liveTip}</p>
-              </div>
             </div>
           )}
         </ComicCard>
