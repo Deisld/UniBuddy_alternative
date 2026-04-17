@@ -17,9 +17,8 @@ export function PhoneShell({
 }) {
   return (
     <div
-      className="flex min-h-screen w-full justify-center"
+      className="flex h-[100dvh] max-h-[100dvh] min-h-0 w-full justify-center overflow-hidden"
       style={{
-        minHeight: "100dvh",
         backgroundColor: "#A8D4FF",
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",
@@ -28,11 +27,9 @@ export function PhoneShell({
       }}
     >
       <div
-        className="relative flex min-h-screen w-full flex-col overflow-hidden"
+        className="relative flex h-full min-h-0 w-full max-w-[560px] flex-1 flex-col overflow-hidden"
         style={{
           width: "100%",
-          maxWidth: "560px",
-          minHeight: "100dvh",
           backgroundColor: bg,
           fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
           borderRadius: "clamp(0px, 2vw, 28px)",
@@ -157,7 +154,7 @@ function CameraOverlay() {
       <input ref={albumInputRef}  type="file" accept="image/*" multiple            style={{ display: "none" }} onChange={handleAlbum} />
 
       {/* Photo grid */}
-      <div className="flex-1 overflow-y-auto" style={{ padding: "12px 16px 20px" }}>
+      <div className="min-h-0 flex-1 overflow-y-auto" style={{ padding: "12px 16px 20px" }}>
         {photos.length === 0 ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "12px" }}>
             <span style={{ fontSize: "56px" }}>🏛️</span>
