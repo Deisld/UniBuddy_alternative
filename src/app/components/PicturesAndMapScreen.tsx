@@ -64,14 +64,14 @@ const campusConvenienceItems: CampusConvenienceItem[] = [
     locationsKey: "map_convenience_onestop_locs",
   },
   {
-    titleKey: "map_convenience_umbrella",
-    icon: "☂️",
-    locationsKey: "map_convenience_umbrella_locs",
-  },
-  {
     titleKey: "map_convenience_sanitary",
     icon: "🧴",
     locationsKey: "map_convenience_sanitary_locs",
+  },
+  {
+    titleKey: "map_convenience_umbrella",
+    icon: "☂️",
+    locationsKey: "map_convenience_umbrella_locs",
   },
   {
     titleKey: "map_convenience_smoking",
@@ -88,7 +88,6 @@ interface CampusLocationInfo {
   story: string;
   tags: string[];
   bestFor: string;
-  access: string;
 }
 
 const campusLocationInfo: Record<string, CampusLocationInfo> = {
@@ -99,8 +98,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "A seven-storey hub for industry-integrated education, combining authentic industrial scenarios with immersive virtual teaching environments.",
     story: "The LS building is divided into the north building and the south building. LSS is the south building and LSN is the north building.",
     tags: ["Lab", "North Campus", "Science"],
-    bestFor: "STEM labs · research visits",
-    access: "Verify lifts and ramps on site",
+    bestFor: "Students in pharmacy and statistics",
   },
   fb: {
     type: "📍 Central campus",
@@ -109,8 +107,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "A core facility supporting undergraduate general education and foundational discipline teaching, and a major venue for EAP classes.",
     story: "FB offers many small classrooms and open discussion areas. The ground floor also houses a convenience store and a Subway.",
     tags: ["Teaching", "Core Courses", "Landmark"],
-    bestFor: "New students · core courses",
-    access: "Verify lifts and ramps on site",
+    bestFor: "New students · foundational courses (EAP, maths, clubs & societies)",
   },
   cb: {
     type: "📍 Landmark",
@@ -119,8 +116,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "As the campus core functional zone, it brings together career development services, academic support, and student leisure.",
     story: "The library floors provide study desks, and the building includes key student services such as counselling, IT helpdesk, career center, and one-stop service.",
     tags: ["Iconic", "Campus Story", "Photo Spot"],
-    bestFor: "All visitors · main story stop",
-    access: "Lifts and ramps—verify on site",
+    bestFor: "Visitors, self-study",
   },
   sa: {
     type: "📍 Science cluster",
@@ -129,8 +125,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Primarily accommodates the School of Science while providing laboratories, offices, and lecture theatres for multi-disciplinary use.",
     story: "For rooms on the first floor, the west entrance (facing CB) is more direct. The east entrance leads directly to elevators.",
     tags: ["Science", "Cluster A"],
-    bestFor: "STEM classes",
-    access: "Verify on site",
+    bestFor: "STEM courses and lab classes",
   },
   sb: {
     type: "📍 Science cluster",
@@ -139,8 +134,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Primarily accommodates the School of Science while providing laboratories, offices, and lecture theatres for multi-disciplinary use.",
     story: "For first-floor rooms, the east entrance (facing North Foundation) is more direct. The west entrance leads to elevators.",
     tags: ["Science", "Cluster B"],
-    bestFor: "Labs and seminars",
-    access: "Verify on site",
+    bestFor: "STEM courses and lab classes",
   },
   sc: {
     type: "📍 Science cluster",
@@ -149,8 +143,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Primarily accommodates the School of Science while providing laboratories, offices, and lecture theatres for multi-disciplinary use.",
     story: "For first-floor rooms, enter from the west side facing CB. The east entrance connects more directly to elevators.",
     tags: ["Science", "Cluster C"],
-    bestFor: "Group work · study hops",
-    access: "Verify on site",
+    bestFor: "STEM courses and lab classes",
   },
   sd: {
     type: "📍 Science cluster",
@@ -159,8 +152,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Primarily accommodates the School of Science while providing laboratories, offices, and lecture theatres for multi-disciplinary use.",
     story: "For first-floor rooms, the east entrance (towards North Foundation) is usually easier. The west entrance leads to elevators.",
     tags: ["Science", "Cluster D"],
-    bestFor: "Moving between clusters",
-    access: "Verify on site",
+    bestFor: "STEM courses and lab classes",
   },
   pb: {
     type: "📍 Public services",
@@ -169,8 +161,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Functions as a central academic facility featuring large-capacity lecture theatres, classrooms, offices, and meeting rooms.",
     story: "The entrance is located on the east side, adjacent to the shop.",
     tags: ["Public", "Events", "Services"],
-    bestFor: "Guests · event info",
-    access: "Verify on site",
+    bestFor: "Pharmacy students",
   },
   ma: {
     type: "📍 Mathematics",
@@ -179,8 +170,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Contains offices, classrooms, and lecture theatres, primarily supporting the School of Mathematics and Physics.",
     story: "MA and MB are interconnected, allowing access to the other building from every floor.",
     tags: ["Math", "Academic"],
-    bestFor: "Math and statistics",
-    access: "Verify on site",
+    bestFor: "Science school students",
   },
   mb: {
     type: "📍 Mathematics",
@@ -189,8 +179,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Contains offices, classrooms, and lecture theatres, primarily supporting the School of Mathematics and Physics.",
     story: "MA and MB are interconnected, allowing access to the other building from every floor.",
     tags: ["Math", "Academic"],
-    bestFor: "Seminars · office hours",
-    access: "Verify on site",
+    bestFor: "Science school students",
   },
   ee: {
     type: "📍 Engineering",
@@ -199,8 +188,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Features engineering laboratories, classrooms, and lecture halls, serving as a primary facility for the School of Advanced Technology.",
     story: "EE and EB are connected. Transit to the adjacent building is available on specific floors.",
     tags: ["EEE", "Lab", "Innovation"],
-    bestFor: "Engineering visits · lab tours",
-    access: "Lab areas may need booking—verify",
+    bestFor: "Engineering students and lab classes",
   },
   eb: {
     type: "📍 Engineering",
@@ -209,8 +197,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Provides classrooms and lecture theatres alongside specialized studios for Civil Engineering and Industrial Design.",
     story: "EE and EB are connected. Transit to the adjacent building is available on specific floors.",
     tags: ["Engineering", "Project-based"],
-    bestFor: "Project studios · workshops",
-    access: "Verify on site",
+    bestFor: "Engineering students and lab classes",
   },
   ir: {
     type: "📍 South Campus",
@@ -219,8 +206,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "A functional building for scientific cooperation and international exchange, often used by research groups and visiting scholars.",
     story: "The entrance is located on the east-south side, near the right side of the underground passage.",
     tags: ["Research", "International"],
-    bestFor: "Academic visits and activity discussions",
-    access: "All floors",
+    bestFor: "Academic visits and exchange",
   },
   ia: {
     type: "📍 South Campus",
@@ -229,8 +215,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "An important venue for hosting conferences, receptions, and cross-cultural academic activities.",
     story: "The entrance is located on the west-south side, near the left side of the underground passage.",
     tags: ["Conference", "Bilingual", "Guests"],
-    bestFor: "International visitor & conference reception",
-    access: "All floors",
+    bestFor: "International visitors and conference hosting",
   },
   hs: {
     type: "📍 South Campus",
@@ -239,8 +224,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "A key humanities teaching area with seminar-style spaces and social science learning support.",
     story: "This area often hosts reading clubs and debate activities.",
     tags: ["Humanities", "Seminar", "Culture"],
-    bestFor: "Humanities courses",
-    access: "All floors",
+    bestFor: "Humanities and social sciences courses",
   },
   es: {
     type: "📍 South Campus",
@@ -249,8 +233,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "An interdisciplinary exploration space emphasizing cross-disciplinary collaboration.",
     story: "The entrance is located on the east-north side.",
     tags: ["Interdisciplinary", "Future"],
-    bestFor: "Environmental and interdisciplinary majors",
-    access: "All floors",
+    bestFor: "Environmental science and industrial design students",
   },
   db: {
     type: "📍 South Campus",
@@ -259,8 +242,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "Workshops, exhibition areas, and review spaces for design-major students.",
     story: "The entrance is on the west-north side, behind HS.",
     tags: ["Design", "Studio", "Exhibition"],
-    bestFor: "Design majors & exhibitions",
-    access: "Studio areas follow department rules",
+    bestFor: "Architecture majors and portfolio showcases",
   },
   bs: {
     type: "📍 South Campus",
@@ -269,8 +251,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "A key building for business education and case teaching, connecting industry practice with international curricula.",
     story: "Main entrance is on the east side; north and south entries are also available.",
     tags: ["Business", "Case Study", "Career"],
-    bestFor: "Business students & career exploration",
-    access: "All floors",
+    bestFor: "Business students and career exploration",
   },
   as: {
     type: "📍 South Campus",
@@ -279,8 +260,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "A practical teaching space integrating film, creativity, and technology for media-related majors.",
     story: "The entrance is located on the east-south side, behind IR.",
     tags: ["Media", "Creative", "Studio"],
-    bestFor: "Film, TV, and creative courses",
-    access: "Most floors open; some rooms may be closed",
+    bestFor: "Arts majors and film screenings",
   },
   gym: {
     type: "🎮 South Campus",
@@ -289,8 +269,7 @@ const campusLocationInfo: Record<string, CampusLocationInfo> = {
     desc: "A large indoor sports and event venue, supporting campus sports culture and collective activities.",
     story: "Entrances are available on both west and east sides.",
     tags: ["Sports", "Events", "Wellness"],
-    bestFor: "Sports and event viewing",
-    access: "By appointment",
+    bestFor: "Exercise and sports event viewing",
   },
 };
 
@@ -302,8 +281,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "一座七层教学与科研综合楼，融合真实产业场景与沉浸式虚拟教学环境。",
     story: "LS 由南北两栋组成，LSS 为南楼，LSN 为北楼。",
     tags: ["实验室", "北校区", "科学"],
-    bestFor: "理工实验课 · 科研参访",
-    access: "无障碍通行请以现场设施为准",
+    bestFor: "药学院和统计方向的学生",
   },
   fb: {
     type: "📍 校园中心",
@@ -312,8 +290,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "本科通识与基础课程的重要教学楼，也是 EAP 课程主要上课地点之一。",
     story: "FB 内有大量小教室与开放讨论区，一层设有便利店与 Subway。",
     tags: ["教学", "基础课程", "地标"],
-    bestFor: "新生 · 基础课",
-    access: "无障碍通行请以现场设施为准",
+    bestFor: "新生 · 基础课（EAP、数学课、社团活动）",
   },
   cb: {
     type: "📍 地标建筑",
@@ -322,8 +299,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "校园核心功能区，汇集学习支持、职业发展与学生服务资源。",
     story: "图书馆楼层提供自习空间，楼内还有心理咨询、IT 帮助台、就业中心等服务。",
     tags: ["地标", "校园故事", "拍照点"],
-    bestFor: "所有来访者 · 校园主线打卡",
-    access: "设有电梯与坡道，细节以现场为准",
+    bestFor: "来访者，自习",
   },
   sa: {
     type: "📍 理科组团",
@@ -332,8 +308,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "主要服务理学院教学与科研，配置实验室、办公室及阶梯教室。",
     story: "一层教室建议从西门（朝向 CB）进入更近，东门可直达电梯。",
     tags: ["理科", "A 组团"],
-    bestFor: "理工课程",
-    access: "通行信息请以现场为准",
+    bestFor: "理工课程与实验课",
   },
   sb: {
     type: "📍 理科组团",
@@ -342,8 +317,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "主要服务理学院教学与科研，配置实验室、办公室及阶梯教室。",
     story: "去一层教室从东门（朝向北校区基础楼）更方便，西门更靠近电梯。",
     tags: ["理科", "B 组团"],
-    bestFor: "实验课与研讨课",
-    access: "通行信息请以现场为准",
+    bestFor: "理工课程与实验课",
   },
   sc: {
     type: "📍 理科组团",
@@ -352,8 +326,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "主要服务理学院教学与科研，配置实验室、办公室及阶梯教室。",
     story: "一层教室建议从西侧（朝 CB）进入，东侧入口更靠近电梯。",
     tags: ["理科", "C 组团"],
-    bestFor: "小组学习 · 教学穿梭",
-    access: "通行信息请以现场为准",
+    bestFor: "理工课程与实验课",
   },
   sd: {
     type: "📍 理科组团",
@@ -362,8 +335,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "主要服务理学院教学与科研，配置实验室、办公室及阶梯教室。",
     story: "一层教室通常从东门（朝北基础楼）更便捷，西门可到电梯。",
     tags: ["理科", "D 组团"],
-    bestFor: "组团之间快速通行",
-    access: "通行信息请以现场为准",
+    bestFor: "理工课程与实验课",
   },
   pb: {
     type: "📍 公共服务区",
@@ -372,8 +344,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "校园公共教学核心设施，设有大教室、普通教室、办公室与会议空间。",
     story: "主要入口位于东侧，临近商店区域。",
     tags: ["公共", "活动", "服务"],
-    bestFor: "访客 · 活动信息",
-    access: "通行信息请以现场为准",
+    bestFor: "药学院学生",
   },
   ma: {
     type: "📍 数学组团",
@@ -382,8 +353,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "包含办公室、教室与阶梯教室，主要服务数学与物理相关教学。",
     story: "MA 与 MB 楼层互通，可在各层前往相邻楼栋。",
     tags: ["数学", "学术"],
-    bestFor: "数学与统计课程",
-    access: "通行信息请以现场为准",
+    bestFor: "理学院学生",
   },
   mb: {
     type: "📍 数学组团",
@@ -392,8 +362,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "包含办公室、教室与阶梯教室，主要服务数学与物理相关教学。",
     story: "MA 与 MB 楼层互通，可在各层前往相邻楼栋。",
     tags: ["数学", "学术"],
-    bestFor: "研讨课 · 答疑时段",
-    access: "通行信息请以现场为准",
+    bestFor: "理学院学生",
   },
   ee: {
     type: "📍 工程组团",
@@ -402,8 +371,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "配备工程实验室、教室与报告厅，是先进技术学院的重要教学楼。",
     story: "EE 与 EB 在部分楼层连通，可在楼内换楼。",
     tags: ["电子电气", "实验", "创新"],
-    bestFor: "工程参访 · 实验课",
-    access: "部分实验区需预约，请以现场安排为准",
+    bestFor: "工程学院学生与实验课",
   },
   eb: {
     type: "📍 工程组团",
@@ -412,8 +380,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "提供教室与阶梯教室，同时设有土木工程与工业设计专业空间。",
     story: "EE 与 EB 在部分楼层互通，可在楼内换楼。",
     tags: ["工程", "项目制"],
-    bestFor: "项目课程 · 工作坊",
-    access: "通行信息请以现场为准",
+    bestFor: "工程学院学生与实验课",
   },
   ir: {
     type: "📍 南校区",
@@ -423,7 +390,6 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     story: "入口位于东南侧，靠近地下通道右侧。",
     tags: ["科研", "国际"],
     bestFor: "学术参访与交流",
-    access: "全楼层可达",
   },
   ia: {
     type: "📍 南校区",
@@ -433,7 +399,6 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     story: "入口位于西南侧，靠近地下通道左侧。",
     tags: ["会议", "双语", "接待"],
     bestFor: "国际访客与会议接待",
-    access: "全楼层可达",
   },
   hs: {
     type: "📍 南校区",
@@ -443,7 +408,6 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     story: "这里常举办读书会、辩论与人文活动。",
     tags: ["人文", "研讨", "文化"],
     bestFor: "人文社科课程",
-    access: "全楼层可达",
   },
   es: {
     type: "📍 南校区",
@@ -452,8 +416,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "强调跨学科协作与创新探索的教学科研空间。",
     story: "入口位于建筑东北侧。",
     tags: ["交叉学科", "未来方向"],
-    bestFor: "环境与交叉学科专业",
-    access: "全楼层可达",
+    bestFor: "环科和工业设计学生",
   },
   db: {
     type: "📍 南校区",
@@ -462,8 +425,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "提供设计专业所需的工作坊、展示区与评图空间。",
     story: "入口位于西北侧，靠近 HS 后方。",
     tags: ["设计", "工作室", "展览"],
-    bestFor: "设计专业与作品展示",
-    access: "工作室区域遵循院系管理规则",
+    bestFor: "建筑专业与作品展示",
   },
   bs: {
     type: "📍 南校区",
@@ -472,8 +434,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "商科教育核心楼宇，连接案例教学、国际课程与行业实践。",
     story: "主入口在东侧，北侧与南侧也可进入。",
     tags: ["商科", "案例教学", "职业发展"],
-    bestFor: "商科学生 · 职业探索",
-    access: "全楼层可达",
+    bestFor: "商科学生与职业探索活动",
   },
   as: {
     type: "📍 南校区",
@@ -482,8 +443,7 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     desc: "融合影视、创意与技术的实践教学空间，服务媒体相关专业。",
     story: "入口位于东南侧，靠近 IR 后方。",
     tags: ["媒体", "创意", "工作室"],
-    bestFor: "影视与创意课程",
-    access: "大部分楼层开放，个别房间可能受限",
+    bestFor: "艺术专业学生，电影观赏",
   },
   gym: {
     type: "🎮 南校区",
@@ -493,7 +453,6 @@ const campusLocationInfoZh: Record<string, CampusLocationInfo> = {
     story: "东西两侧均设有入口。",
     tags: ["运动", "活动", "健康"],
     bestFor: "运动锻炼与赛事观赛",
-    access: "需预约",
   },
 };
 
@@ -544,7 +503,6 @@ export function PicturesAndMapScreen() {
           startButton: "开始定位",
           stopButton: "停止定位",
           bestFor: "适合",
-          access: "通行",
           mapTip: "地图点位可点击查看简介；切到实时定位可显示你当前附近位置。",
           liveTip: "地图数据来自 OpenStreetMap，定位需浏览器授权且建议在 HTTPS 环境使用。",
         }
@@ -564,7 +522,6 @@ export function PicturesAndMapScreen() {
           startButton: "Start",
           stopButton: "Stop",
           bestFor: "Best for",
-          access: "Access",
           mapTip: "Pins are clickable for quick intros; switch to Live Location to see your nearby position.",
           liveTip: "Map data is provided by OpenStreetMap. Browser permission and HTTPS are recommended.",
         };
@@ -873,14 +830,10 @@ export function PicturesAndMapScreen() {
                     </span>
                   ))}
                 </div>
-                <div style={{ marginTop: "8px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px" }}>
+                <div style={{ marginTop: "8px" }}>
                   <div style={{ backgroundColor: C.cream, border: `1.5px solid ${C.pale}`, borderRadius: "8px", padding: "6px 8px" }}>
                     <p style={{ fontSize: "10px", color: "#4B6898", fontWeight: 700 }}>{mapCopy.bestFor}</p>
-                    <p style={{ fontSize: "11px", color: C.navy, fontWeight: 800, marginTop: "1px" }}>{activeLocation?.bestFor ?? "-"}</p>
-                  </div>
-                  <div style={{ backgroundColor: C.cream, border: `1.5px solid ${C.pale}`, borderRadius: "8px", padding: "6px 8px" }}>
-                    <p style={{ fontSize: "10px", color: "#4B6898", fontWeight: 700 }}>{mapCopy.access}</p>
-                    <p style={{ fontSize: "11px", color: C.navy, fontWeight: 800, marginTop: "1px" }}>{activeLocation?.access ?? "-"}</p>
+                    <p style={{ fontSize: "11px", color: C.navy, fontWeight: 800, marginTop: "1px", lineHeight: 1.45 }}>{activeLocation?.bestFor ?? "-"}</p>
                   </div>
                 </div>
               </div>
