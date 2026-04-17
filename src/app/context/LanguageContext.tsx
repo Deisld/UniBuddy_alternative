@@ -49,7 +49,7 @@ const zh: Texts = {
   map_convenience_sanitary: "卫生巾/湿纸巾自动售卖机",
   map_convenience_umbrella: "雨伞借用点",
   map_convenience_smoking: "吸烟区",
-  map_convenience_sanitary_locs: "IRG14 / BSG43 / BSG57 / BSG26 / FBG38",
+  map_convenience_sanitary_locs: "FBG38 / SA168 / SB117 / SC170 / SD108 / IRG14 / BSG43 / BSG57 / BSG26",
   map_convenience_umbrella_locs: "CB3 前台接待处",
   map_convenience_smoking_locs: "CB 南门口 / FB东北门门口",
   map_walk: "🚶 步行路线", map_floor_nav: "🏢 楼内导航", map_arrive: "到达教室",
