@@ -1209,7 +1209,7 @@ export function PicturesAndMapScreen() {
                           }}
                         >
                           <span style={{ minWidth: "42px", height: "24px", borderRadius: "8px", backgroundColor: C.mint, border: `2px solid ${C.navy}`, boxShadow: `2px 2px 0 ${C.navy}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 900, color: C.navy }}>CB</span>
-                          <span style={{ fontSize: "16px", fontWeight: 900, color: C.royal }}>→</span>
+                          <span style={{ fontSize: "12px", fontWeight: 900, color: C.royal }}>{lang === "zh" ? "到" : "to"}</span>
                           <span style={{ minWidth: "48px", height: "24px", borderRadius: "8px", backgroundColor: C.yellow, border: `2px solid ${C.navy}`, boxShadow: `2px 2px 0 ${C.navy}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 900, color: C.navy, padding: "0 10px" }}>{targetLabel}</span>
                         </div>
                         <div style={{ position: "relative", height: "220px", backgroundColor: "#CFE8FF" }}>
@@ -1232,28 +1232,12 @@ export function PicturesAndMapScreen() {
                               viewBox="0 0 100 100"
                               preserveAspectRatio="none"
                             >
-                              <defs>
-                                <marker id="route-arrow" markerWidth="6" markerHeight="6" refX="4.8" refY="3" orient="auto">
-                                  <path d="M0,0 L6,3 L0,6 z" fill="#2350D8" />
-                                </marker>
-                              </defs>
                               <polyline
                                 points={linePoints.map((p) => `${p.x},${p.y}`).join(" ")}
-                                stroke="#4B9EF7"
-                                strokeWidth="1.5"
+                                stroke="#1F2A44"
+                                strokeWidth="1.25"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                fill="none"
-                                opacity="0.45"
-                              />
-                              <polyline
-                                points={linePoints.map((p) => `${p.x},${p.y}`).join(" ")}
-                                stroke="#2350D8"
-                                strokeWidth="0.95"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeDasharray="2.2,1.5"
-                                markerEnd="url(#route-arrow)"
                                 fill="none"
                               />
                             </svg>
