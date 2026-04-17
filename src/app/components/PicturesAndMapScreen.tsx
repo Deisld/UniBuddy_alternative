@@ -54,6 +54,39 @@ const campusMapHotspots = [
   { id: "gym", label: "GYM", fullName: "Gymnasium", x: 73, y: 75, color: "#263238" },
 ] as const;
 
+type RouteMapPoint = { id: string; x: number; y: number };
+
+const routePointAlias: Record<string, string> = {
+  ms: "ma",
+  lb: "cb",
+  ib: "ia",
+};
+
+const routePointOverrides: Record<string, RouteMapPoint> = {
+  ms: { id: "ms", x: 67, y: 55 },
+  lb: { id: "lb", x: 43, y: 54 },
+  ib: { id: "ib", x: 58, y: 74 },
+};
+
+function extractBuildingCode(buildingLabel: string) {
+  const matched = buildingLabel.match(/\(([A-Za-z]+)\)/);
+  return (matched?.[1] ?? "").trim().toLowerCase();
+}
+
+function getRouteMapPointByCode(buildingCode: string): RouteMapPoint | null {
+  if (!buildingCode) return null;
+  if (routePointOverrides[buildingCode]) return routePointOverrides[buildingCode];
+  const normalized = routePointAlias[buildingCode] ?? buildingCode;
+  const pin = campusMapHotspots.find((h) => h.id === normalized);
+  if (!pin) return null;
+  return { id: pin.id, x: pin.x, y: pin.y };
+}
+
+function clampMapCenter(v: number, zoom: number) {
+  const edge = 50 / zoom;
+  return Math.min(100 - edge, Math.max(edge, v));
+}
+
 type MapTabKey = "map" | "live";
 type CampusConvenienceItem = { titleKey: string; icon: string; locationsKey: string };
 
@@ -1007,6 +1040,25 @@ export function PicturesAndMapScreen() {
         <div style={{ position: "absolute", inset: 0, zIndex: 50, backgroundColor: C.ice, display: "flex", flexDirection: "column" }}>
           {(() => {
             const locale = getLocale(selected);
+            const routeStart = getRouteMapPointByCode("cb") ?? { id: "cb", x: 42, y: 56 };
+            const destinationCode = extractBuildingCode(locale.building);
+            const routeEnd = getRouteMapPointByCode(destinationCode) ?? routeStart;
+            const dx = routeEnd.x - routeStart.x;
+            const dy = routeEnd.y - routeStart.y;
+            const routeNeedsTurn = Math.abs(dx) > 2.5 && Math.abs(dy) > 2.5;
+            const routePoints = routeNeedsTurn
+              ? [routeStart, { id: "mid", x: routeEnd.x, y: routeStart.y }, routeEnd]
+              : [routeStart, routeEnd];
+            const centerX = (routeStart.x + routeEnd.x) / 2;
+            const centerY = (routeStart.y + routeEnd.y) / 2;
+            const routeSpread = Math.abs(dx) + Math.abs(dy);
+            const mapZoom = Math.max(1.85, Math.min(3.1, 2.9 - routeSpread / 28));
+            const clampedCenterX = clampMapCenter(centerX, mapZoom);
+            const clampedCenterY = clampMapCenter(centerY, mapZoom);
+            const mapShiftX = 50 - clampedCenterX * mapZoom;
+            const mapShiftY = 50 - clampedCenterY * mapZoom;
+            const distanceMeters = Math.max(60, Math.round(Math.hypot(dx, dy) * 8));
+            const startBuildingLabel = lang === "zh" ? "中央楼 (CB)" : "Central Building (CB)";
             return (
               <>
                 {/* Nav header */}
@@ -1143,114 +1195,149 @@ export function PicturesAndMapScreen() {
                         <span style={{ marginLeft: "auto", backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`, borderRadius: "6px", padding: "1px 8px", fontSize: "9px", fontWeight: 900, color: C.navy, letterSpacing: "0.5px" }}>DEMO</span>
                       </div>
 
-                      {/* Mock navigation map */}
+                      {/* Demo-style zoomed map with route arrow */}
                       <ComicCard style={{ padding: 0, overflow: "hidden", marginBottom: "10px" }}>
-                        {/* Map canvas */}
-                        <div style={{ position: "relative", height: "170px", backgroundColor: "#D8EEFF" }}>
-                          <svg
-                            style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-                            viewBox="0 0 320 170"
-                            preserveAspectRatio="none"
+                        <div style={{ position: "relative", height: "220px", backgroundColor: "#CFE8FF" }}>
+                          <div
+                            style={{
+                              position: "absolute",
+                              width: `${mapZoom * 100}%`,
+                              height: `${mapZoom * 100}%`,
+                              left: `${mapShiftX}%`,
+                              top: `${mapShiftY}%`,
+                            }}
                           >
-                            {/* Background */}
-                            <rect x="0" y="0" width="320" height="170" fill="#D8EEFF" />
-
-                            {/* Road network */}
-                            <line x1="0" y1="57" x2="320" y2="57" stroke="#B9DBF5" strokeWidth="14" />
-                            <line x1="0" y1="113" x2="320" y2="113" stroke="#B9DBF5" strokeWidth="14" />
-                            <line x1="80" y1="0" x2="80" y2="170" stroke="#B9DBF5" strokeWidth="11" />
-                            <line x1="240" y1="0" x2="240" y2="170" stroke="#B9DBF5" strokeWidth="11" />
-
-                            {/* Road center lines */}
-                            <line x1="0" y1="57" x2="320" y2="57" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="8,6" opacity="0.6" />
-                            <line x1="0" y1="113" x2="320" y2="113" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="8,6" opacity="0.6" />
-                            <line x1="80" y1="0" x2="80" y2="170" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="8,6" opacity="0.6" />
-                            <line x1="240" y1="0" x2="240" y2="170" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="8,6" opacity="0.6" />
-
-                            {/* City blocks */}
-                            <rect x="8" y="8" width="64" height="42" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            <rect x="90" y="8" width="142" height="42" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            <rect x="250" y="8" width="62" height="42" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            <rect x="8" y="68" width="64" height="38" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            {/* You-are-here block (highlighted) */}
-                            <rect x="90" y="68" width="64" height="38" rx="6" fill="#A8FFD4" stroke="#0E1B4D" strokeWidth="2" />
-                            <rect x="166" y="68" width="66" height="38" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            <rect x="250" y="68" width="62" height="38" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            <rect x="8" y="122" width="64" height="40" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            <rect x="90" y="122" width="142" height="40" rx="6" fill="#C0D8EF" stroke="#92B8D4" strokeWidth="1" />
-                            {/* Destination block (highlighted) */}
-                            <rect x="250" y="122" width="62" height="40" rx="6" fill="#FFD93D" stroke="#0E1B4D" strokeWidth="2" />
-
-                            {/* Route path: from you-here (122,87) → road → right turn → destination (281,142) */}
-                            {/* Shadow glow */}
-                            <path
-                              d="M122 87 L240 87 L240 142 L281 142"
-                              stroke="#4B9EF7"
-                              strokeWidth="6"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              fill="none"
-                              opacity="0.35"
+                            <img
+                              src={`${import.meta.env.BASE_URL}campus-map.jpg`}
+                              alt="XJTLU campus map navigation"
+                              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "saturate(0.95)" }}
                             />
-                            {/* Main route line */}
-                            <path
-                              d="M122 87 L240 87 L240 142 L281 142"
-                              stroke="#2350D8"
-                              strokeWidth="3.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeDasharray="7,5"
-                              fill="none"
-                            />
-                            {/* Direction arrow at mid-path */}
-                            <polygon points="200,84 207,87 200,90" fill="#2350D8" />
-                            <polygon points="243,125 240,132 237,125" fill="#2350D8" />
-                          </svg>
+                            <svg
+                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+                              viewBox="0 0 100 100"
+                              preserveAspectRatio="none"
+                            >
+                              <defs>
+                                <marker id="route-arrow" markerWidth="6" markerHeight="6" refX="4.8" refY="3" orient="auto">
+                                  <path d="M0,0 L6,3 L0,6 z" fill="#2350D8" />
+                                </marker>
+                              </defs>
+                              <polyline
+                                points={routePoints.map((p) => `${p.x},${p.y}`).join(" ")}
+                                stroke="#4B9EF7"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                fill="none"
+                                opacity="0.45"
+                              />
+                              <polyline
+                                points={routePoints.map((p) => `${p.x},${p.y}`).join(" ")}
+                                stroke="#2350D8"
+                                strokeWidth="0.95"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeDasharray="2.2,1.5"
+                                markerEnd="url(#route-arrow)"
+                                fill="none"
+                              />
+                            </svg>
 
-                          {/* "You are here" marker */}
-                          <div style={{
-                            position: "absolute",
-                            left: "38%",
-                            top: "50%",
-                            transform: "translate(-50%, -100%) translateY(-4px)",
-                            display: "flex", flexDirection: "column", alignItems: "center",
-                          }}>
-                            <div style={{
-                              width: "26px", height: "26px", borderRadius: "50%",
-                              backgroundColor: C.mint, border: `2.5px solid ${C.navy}`,
-                              boxShadow: `2px 2px 0 ${C.navy}`,
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                              fontSize: "12px",
-                            }}>📍</div>
-                            <div style={{
-                              backgroundColor: C.white, border: `1.5px solid ${C.navy}`,
-                              borderRadius: "6px", padding: "2px 6px", marginTop: "3px",
-                              fontSize: "8px", fontWeight: 800, color: C.navy,
-                              whiteSpace: "nowrap", boxShadow: `1.5px 1.5px 0 ${C.navy}`,
-                            }}>{t("nav_your_loc")}</div>
-                          </div>
+                            <div
+                              style={{
+                                position: "absolute",
+                                left: `${routeStart.x}%`,
+                                top: `${routeStart.y}%`,
+                                transform: "translate(-50%, -100%)",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                pointerEvents: "none",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: "24px",
+                                  height: "24px",
+                                  borderRadius: "50%",
+                                  backgroundColor: C.mint,
+                                  border: `2px solid ${C.navy}`,
+                                  boxShadow: `2px 2px 0 ${C.navy}`,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  fontSize: "11px",
+                                  marginBottom: "3px",
+                                }}
+                              >
+                                📍
+                              </div>
+                              <div
+                                style={{
+                                  backgroundColor: C.white,
+                                  border: `1.5px solid ${C.navy}`,
+                                  borderRadius: "7px",
+                                  padding: "2px 7px",
+                                  fontSize: "9px",
+                                  fontWeight: 800,
+                                  color: C.navy,
+                                  whiteSpace: "nowrap",
+                                  boxShadow: `1.5px 1.5px 0 ${C.navy}`,
+                                }}
+                              >
+                                {startBuildingLabel}
+                              </div>
+                            </div>
 
-                          {/* Destination marker */}
-                          <div style={{
-                            position: "absolute",
-                            right: "6%",
-                            bottom: "18px",
-                            transform: "translateX(50%)",
-                            display: "flex", flexDirection: "column", alignItems: "center",
-                          }}>
-                            <div style={{
-                              width: "26px", height: "26px", borderRadius: "50%",
-                              backgroundColor: C.coral, border: `2.5px solid ${C.navy}`,
-                              boxShadow: `2px 2px 0 ${C.navy}`,
-                              display: "flex", alignItems: "center", justifyContent: "center",
-                              fontSize: "12px",
-                            }}>🏛️</div>
-                            <div style={{
-                              backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`,
-                              borderRadius: "6px", padding: "2px 6px", marginTop: "3px",
-                              fontSize: "8px", fontWeight: 900, color: C.navy,
-                              whiteSpace: "nowrap", boxShadow: `1.5px 1.5px 0 ${C.navy}`,
-                            }}>{selected.room}</div>
+                            <div
+                              style={{
+                                position: "absolute",
+                                left: `${routeEnd.x}%`,
+                                top: `${routeEnd.y}%`,
+                                transform: "translate(-50%, -100%)",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                pointerEvents: "none",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: "24px",
+                                  height: "24px",
+                                  borderRadius: "50%",
+                                  backgroundColor: C.coral,
+                                  border: `2px solid ${C.navy}`,
+                                  boxShadow: `2px 2px 0 ${C.navy}`,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  fontSize: "11px",
+                                  marginBottom: "3px",
+                                }}
+                              >
+                                🏛️
+                              </div>
+                              <div
+                                style={{
+                                  backgroundColor: C.yellow,
+                                  border: `1.5px solid ${C.navy}`,
+                                  borderRadius: "7px",
+                                  padding: "2px 7px",
+                                  fontSize: "9px",
+                                  fontWeight: 900,
+                                  color: C.navy,
+                                  whiteSpace: "nowrap",
+                                  maxWidth: "140px",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  boxShadow: `1.5px 1.5px 0 ${C.navy}`,
+                                }}
+                                title={locale.building}
+                              >
+                                {locale.building}
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -1268,7 +1355,7 @@ export function PicturesAndMapScreen() {
                           <div style={{ width: "1px", height: "30px", backgroundColor: C.pale, margin: "0 8px" }} />
                           <div style={{ flex: 1, textAlign: "center" }}>
                             <p style={{ fontSize: "9px", fontWeight: 700, color: "#4B6898", marginBottom: "2px" }}>{t("nav_distance")}</p>
-                            <p style={{ fontSize: "15px", fontWeight: 900, color: C.navy }}>~350m</p>
+                            <p style={{ fontSize: "15px", fontWeight: 900, color: C.navy }}>{`~${distanceMeters}m`}</p>
                           </div>
                           <div style={{ width: "1px", height: "30px", backgroundColor: C.pale, margin: "0 8px" }} />
                           <div style={{ flex: 1, textAlign: "center" }}>
