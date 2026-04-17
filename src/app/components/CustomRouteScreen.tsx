@@ -252,7 +252,7 @@ export function CustomRouteScreen() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto" style={{ paddingBottom: "90px" }}>
+      <div className="min-h-0 flex-1 overflow-y-auto" style={{ paddingBottom: "28px" }}>
 
         {/* SELECT */}
         {phase === "select" && (
