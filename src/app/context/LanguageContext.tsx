@@ -283,7 +283,7 @@ const en: Texts = {
   map_convenience_sanitary: "Sanitary Napkin / (Wet) Tissue Vending Machines",
   map_convenience_umbrella: "Umbrella Service Point",
   map_convenience_smoking: "Smoking Area",
-  map_convenience_sanitary_locs: "IRG14 / BSG43 / BSG57 / BSG26 / FBG38",
+  map_convenience_sanitary_locs: "FBG38 / SA168 / SB117 / SC170 / SD108 / IRG14 / BSG43 / BSG57 / BSG26",
   map_convenience_umbrella_locs: "CB3 Reception Desk",
   map_convenience_smoking_locs: "CB South Gate / FB North-East Gate",
   map_walk: "🚶 Walking Route", map_floor_nav: "🏢 Indoor Navigation", map_arrive: "Arrive at Room",
