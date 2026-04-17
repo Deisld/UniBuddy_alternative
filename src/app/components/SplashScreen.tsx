@@ -143,7 +143,7 @@ export function SplashScreen() {
                 letterSpacing: "-2.2px",
                 lineHeight: 1,
                 display: "inline-block",
-                background: "linear-gradient(90deg, #B46CFF 0%, #9D6CFF 22%, #7D7CFF 44%, #5F98FF 66%, #4AB8FF 100%)",
+                background: "linear-gradient(90deg, #3F92FF 0%, #4D82FF 28%, #626FFF 56%, #7B5CF5 78%, #9250F7 100%)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent",
