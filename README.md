@@ -1,11 +1,12 @@
-# Clickable Interface Design (UniBuddy)
+# UniBuddy
 
 一个面向 **XJTLU 校园导览** 场景的可交互原型项目，基于 React + Vite 构建。  
 项目包含校园地图、路线探索、盲盒路线、自定义路线、集章与收藏等核心功能，适合用于课程展示、交互设计演示和前端原型开发。
 
-## 在线设计稿
+## Links
 
-- Figma: [Clickable-Interface-Design](https://www.figma.com/design/RLCy2VrVRj7BbKKFs5JFEj/Clickable-Interface-Design)
+- System: [Clickable-Interface-Design](https://katherine406.github.io/UniBuddy/)
+- Portfolio: [Clickable-Interface-Design](https://katherine406.github.io/index.html)
 
 ## 功能亮点
 
