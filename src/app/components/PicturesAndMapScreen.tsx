@@ -10,6 +10,7 @@ import { BottomNav } from "./BottomNav";
 import { IconBack, IconChevronLeft, IconChevronRight, IconNavigation, IconChevronRight as IconArrow } from "./ComicIcons";
 import { useLanguage } from "../context/LanguageContext";
 import { classrooms } from "../data/classroomData";
+import { ImageZoomLightbox } from "./ImageZoomLightbox";
 
 const C = {
   navy: "#0E1B4D", royal: "#2350D8", sky: "#4B9EF7", pale: "#A8D4FF",
@@ -501,6 +502,7 @@ export function PicturesAndMapScreen() {
 
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<typeof classrooms[0] | null>(null);
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const leafletHostRef = useRef<HTMLDivElement | null>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
@@ -761,7 +763,24 @@ export function PicturesAndMapScreen() {
           <img
             src={`${import.meta.env.BASE_URL}${photoDefs[cur].fileName}`}
             alt={t(photoDefs[cur].titleKey)}
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            role="button"
+            tabIndex={0}
+            onClick={() =>
+              setLightbox({
+                src: `${import.meta.env.BASE_URL}${photoDefs[cur].fileName}`,
+                alt: t(photoDefs[cur].titleKey),
+              })
+            }
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setLightbox({
+                  src: `${import.meta.env.BASE_URL}${photoDefs[cur].fileName}`,
+                  alt: t(photoDefs[cur].titleKey),
+                });
+              }
+            }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", cursor: "pointer" }}
           />
           <div style={{ position: "absolute", top: "10px", left: "10px", backgroundColor: C.yellow, border: `2px solid ${C.navy}`, borderRadius: "8px", padding: "2px 8px", fontSize: "11px", fontWeight: 900, color: C.navy, boxShadow: `2px 2px 0 ${C.navy}` }}>
             {t(photoDefs[cur].tagKey)}
@@ -809,7 +828,28 @@ export function PicturesAndMapScreen() {
           {mapTab === "map" ? (
             <div key="campus-map-tab">
               <div style={{ position: "relative", borderRadius: "12px", overflow: "hidden", border: `2px solid ${C.navy}`, boxShadow: `3px 3px 0 ${C.navy}`, backgroundColor: "#E8EEF6" }}>
-                <img src={`${import.meta.env.BASE_URL}campus-map.jpg`} alt="XJTLU campus map" style={{ width: "100%", height: "auto", display: "block" }} />
+                <img
+                  src={`${import.meta.env.BASE_URL}campus-map.jpg`}
+                  alt={lang === "zh" ? "西交利物浦校园地图" : "XJTLU campus map"}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    setLightbox({
+                      src: `${import.meta.env.BASE_URL}campus-map.jpg`,
+                      alt: lang === "zh" ? "西交利物浦校园地图" : "XJTLU campus map",
+                    })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setLightbox({
+                        src: `${import.meta.env.BASE_URL}campus-map.jpg`,
+                        alt: lang === "zh" ? "西交利物浦校园地图" : "XJTLU campus map",
+                      });
+                    }
+                  }}
+                  style={{ width: "100%", height: "auto", display: "block", cursor: "pointer" }}
+                />
                 {campusMapHotspots.map((pin) => (
                   <button
                     key={pin.id}
@@ -1027,6 +1067,13 @@ export function PicturesAndMapScreen() {
 
       <BottomNav activeTab="Map" />
 
+      <ImageZoomLightbox
+        src={lightbox?.src ?? null}
+        alt={lightbox?.alt ?? ""}
+        onClose={() => setLightbox(null)}
+        lang={lang}
+      />
+
       {/* ── Navigation Detail Overlay ── */}
       {selected && (
         <div style={{ position: "absolute", inset: 0, zIndex: 50, backgroundColor: C.ice, display: "flex", flexDirection: "column" }}>
@@ -1201,7 +1248,16 @@ export function PicturesAndMapScreen() {
                           <img
                             src={routePreviewSrc}
                             alt={routePreviewAlt}
-                            style={{ width: "100%", height: "auto", display: "block" }}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => setLightbox({ src: routePreviewSrc, alt: routePreviewAlt })}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                setLightbox({ src: routePreviewSrc, alt: routePreviewAlt });
+                              }
+                            }}
+                            style={{ width: "100%", height: "auto", display: "block", cursor: "pointer" }}
                           />
                           {!routePreviewFile && (
                             <div style={{ position: "absolute", left: "8px", right: "8px", bottom: "8px", borderRadius: "8px", backgroundColor: "rgba(255,255,255,0.92)", border: `1.5px solid ${C.pale}`, padding: "4px 6px", textAlign: "center" }}>
