@@ -1192,7 +1192,6 @@ export function PicturesAndMapScreen() {
                       <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
                         <div style={{ width: "4px", height: "18px", backgroundColor: C.mint, border: `1.5px solid ${C.navy}`, borderRadius: "2px" }} />
                         <span style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>🗺️ {t("nav_plan_route")}</span>
-                        <span style={{ marginLeft: "auto", backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`, borderRadius: "6px", padding: "1px 8px", fontSize: "9px", fontWeight: 900, color: C.navy, letterSpacing: "0.5px" }}>DEMO</span>
                       </div>
 
                       {/* Demo-style zoomed map with route arrow */}
@@ -1272,21 +1271,6 @@ export function PicturesAndMapScreen() {
                         </div>
                       </ComicCard>
 
-                      {/* GPS coming-soon note */}
-                      <ComicCard style={{
-                        padding: "12px 14px",
-                        backgroundColor: `${C.purple}12`,
-                        border: `2px dashed ${C.purple}55`,
-                        boxShadow: "none",
-                        display: "flex", flexDirection: "column", alignItems: "center", gap: "4px",
-                      }}>
-                        <p style={{ fontSize: "11px", fontWeight: 800, color: C.purple, textAlign: "center" }}>
-                          🛰️ {t("nav_gps_coming")}
-                        </p>
-                        <p style={{ fontSize: "10px", fontWeight: 600, color: "#4B6898", textAlign: "center" }}>
-                          {t("nav_route_hint")}
-                        </p>
-                      </ComicCard>
                     </div>
                   )}
                 </div>
