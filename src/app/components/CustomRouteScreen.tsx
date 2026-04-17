@@ -62,13 +62,27 @@ const campusMapHotspots = [
 
 type CampusMapHotspot = (typeof campusMapHotspots)[number];
 
-/** 餐饮点位（与地图大致方位一致，用于距离估算；名称走 i18n） */
-const customDiningSpots = [
-  { id: "north_hope", labelKey: "custom_d_north_hope", fullName: "North Hope", x: 40, y: 28, color: "#ef5350" },
-  { id: "south_hope", labelKey: "custom_d_south_hope", fullName: "South Hope", x: 48, y: 78, color: "#e57373" },
-  { id: "west_hall", labelKey: "custom_d_west_hall", fullName: "West Hall", x: 36, y: 44, color: "#ff8a65" },
-  { id: "east_hall", labelKey: "custom_d_east_hall", fullName: "East Hall", x: 46, y: 44, color: "#ff8a65" },
-] as const;
+function hotspotXY(id: string): { x: number; y: number } {
+  const p = campusMapHotspots.find((h) => h.id === id);
+  if (!p) throw new Error(`Unknown hotspot: ${id}`);
+  return { x: p.x, y: p.y };
+}
+
+/**
+ * 餐饮点位坐标（与主地图标注一致）：北宏愿靠 MB、南宏愿靠 IR、西厅靠南宏愿、东厅在 IA 楼内。
+ * 用于 mapDist / 最近邻路径，偏移量可按真实地图微调。
+ */
+const customDiningSpots = (() => {
+  const mb = hotspotXY("mb");
+  const ir = hotspotXY("ir");
+  const ia = hotspotXY("ia");
+  return [
+    { id: "north_hope", labelKey: "custom_d_north_hope", fullName: "North Hope", x: mb.x - 1, y: mb.y - 1, color: "#ef5350" },
+    { id: "south_hope", labelKey: "custom_d_south_hope", fullName: "South Hope", x: ir.x - 1, y: ir.y, color: "#e57373" },
+    { id: "west_hall", labelKey: "custom_d_west_hall", fullName: "West Hall", x: ir.x - 3, y: ir.y, color: "#ff8a65" },
+    { id: "east_hall", labelKey: "custom_d_east_hall", fullName: "East Hall", x: ia.x + 0.4, y: ia.y - 0.3, color: "#ff8a65" },
+  ] as const;
+})();
 
 function emojiForPin(id: string): string {
   if (id === "gym") return "🏟️";
