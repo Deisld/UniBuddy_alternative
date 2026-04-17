@@ -5,8 +5,8 @@
 
 ## Links
 
-- System: [Clickable-Interface-Design](https://katherine406.github.io/UniBuddy/)
-- Portfolio: [Clickable-Interface-Design](https://katherine406.github.io/index.html)
+- System: [UniBuddy Campus Tour System](https://katherine406.github.io/UniBuddy/)
+- Portfolio: [UniBuddy Portfolio](https://katherine406.github.io/index.html)
 
 ## 功能亮点
 
