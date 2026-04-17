@@ -395,8 +395,6 @@ export function CustomRouteScreen() {
               <p style={{ fontSize: "14px", fontWeight: 800, color: C.navy, marginBottom: "12px" }}>{t("custom_detail")}</p>
               {route.map((b, idx) => {
                 const isLast = idx === route.length - 1;
-                const next = !isLast ? route[idx + 1] : null;
-                const walk = next ? mapDistToWalkMinutes(b, next) : null;
                 return (
                   <div key={b.id} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: "28px" }}>
@@ -411,12 +409,6 @@ export function CustomRouteScreen() {
                         <span style={{ fontSize: "14px", fontWeight: 800, color: C.navy }}>{buildingDisplayLabel(b, t)}</span>
                         <span style={{ backgroundColor: b.bg, border: `1.5px solid ${b.color}`, borderRadius: "6px", padding: "0 6px", fontSize: "10px", fontWeight: 800, color: b.color }}>{t(b.catKey)}</span>
                       </div>
-                      {walk && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
-                          <div style={{ width: "10px", height: "1.5px", backgroundColor: C.pale }} />
-                          <span style={{ fontSize: "11px", fontWeight: 600, color: "#4B6898" }}>{t("custom_walk", { n: walk })}</span>
-                        </div>
-                      )}
                     </div>
                     <IconPin size={12} color={b.color} />
                   </div>
