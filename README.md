@@ -1,64 +1,108 @@
-# UniBuddy
+# 🎓 UniBuddy
 
-一个面向 **XJTLU 校园导览** 场景的可交互原型项目，基于 React + Vite 构建。  
-项目包含校园地图、路线探索、盲盒路线、自定义路线、集章与收藏等核心功能，适合用于课程展示、交互设计演示和前端原型开发。
+An interactive prototype designed for the **XJTLU campus navigation experience**, built with **React + Vite**.
 
-## Links
+UniBuddy integrates map exploration, route discovery, gamified navigation, and personalization features into a cohesive user-centered system — ideal for **HCI projects, design showcases, and frontend prototyping**.
 
-- System: [UniBuddy Campus Tour System](https://katherine406.github.io/UniBuddy/)
-- Portfolio: [UniBuddy Portfolio](https://katherine406.github.io/index.html)
+---
 
-## 功能亮点
+## 🔗 Links
 
-- **沉浸式启动页**：卡通化风格的品牌首屏与引导入口
-- **校园主页导航**：快速进入图片地图、路线探索、盲盒路线、自定义路线
-- **教室搜索与导航信息**：支持按教室号/楼栋检索并查看步行与楼层指引
-- **路线探索系统**：包含推荐路线、盲盒路线（按心情生成）、自定义路线（多点规划）
-- **个人中心能力**：路线收藏、打卡集章、拍照记录与进度展示
-- **中英双语文本**：内置 `zh/en` 文案资源，方便国际化扩展
+* 🌐 **Live System**:
+  [https://katherine406.github.io/UniBuddy/](https://katherine406.github.io/UniBuddy/)
 
-## 技术栈
+* 🎨 **Portfolio Page**:
+  [https://katherine406.github.io/index.html](https://katherine406.github.io/index.html)
 
-- **框架**：React 18
-- **构建工具**：Vite 6
-- **路由**：React Router 7
-- **样式**：Tailwind CSS 4 + 自定义 CSS
-- **组件生态**：Radix UI、MUI、Lucide、Recharts 等
+---
 
-## 快速开始
+## ✨ Key Features
 
-访问：
+*  **Immersive Landing Experience**
+  Playful, cartoon-style onboarding interface with strong visual identity
 
-```text
+*  **Campus Navigation Hub**
+  Centralized entry to map view, route exploration, blind-box routes, and custom routes
+
+*  **Classroom Search & Guidance**
+  Search by building or room number with walking directions and floor-level hints
+
+* 🗺️ **Route Exploration System**
+
+  *  Recommended routes
+  *  Blind-box routes (generated based on mood)
+  *  Custom routes (multi-point planning)
+
+* 👤 **Personal Center**
+
+  *  Favorites & saved routes
+  *  Check-in & stamp collection system
+  *  Photo records & progress tracking
+
+* 🌍 **Bilingual Support (ZH/EN)**
+  Built-in internationalization structure for future scalability
+
+---
+
+## 🛠️ Tech Stack
+
+*  **Framework**: React 18
+*  **Build Tool**: Vite 6
+*  **Routing**: React Router 7
+*  **Styling**: Tailwind CSS 4 + Custom CSS
+*  **UI Ecosystem**: Radix UI, MUI, Lucide Icons, Recharts
+
+---
+
+##  Getting Started
+
+👉 Open the live demo directly:
+
+```
 https://katherine406.github.io/UniBuddy/
 ```
 
-## 项目结构
+Or run locally:
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## 📁 Project Structure
 
 ```text
-UniBuddy-main/
+Clickable_Interface_Design/
 ├─ src/
 │  ├─ app/
-│  │  ├─ components/      # 页面与通用组件
-│  │  ├─ context/         # 全局状态（收藏、语言、相机等）
-│  │  ├─ data/            # 校园/教室等静态数据
+│  │  ├─ components/      # UI components & screens
+│  │  ├─ context/         # Global state (favorites, language, camera, etc.)
+│  │  ├─ data/            # Static campus & classroom data
 │  │  ├─ App.tsx
-│  │  └─ routes.tsx       # 路由配置
-│  ├─ styles/             # 全局样式与主题
-│  └─ main.tsx            # 应用入口
+│  │  └─ routes.tsx       # Routing configuration
+│  ├─ styles/             # Global styles & themes
+│  └─ main.tsx            # Entry point
 ├─ index.html
 ├─ package.json
 └─ vite.config.ts
 ```
 
-## 可扩展方向
+---
 
-- 接入真实地图 API 与实时定位（GPS）能力
-- 路径规划算法升级（避障、无障碍优先、拥挤度避让）
-- 登录系统与云端同步（收藏、打卡、照片）
-- 将 mock 数据替换为后端服务接口
+## 🔮 Future Improvements
 
-## 许可证
+*  Integration with real map APIs & GPS positioning
+*  Advanced route planning (accessibility-aware, crowd-aware navigation)
+*  User authentication & cloud synchronization
+*  Backend integration to replace mock data
 
-当前仓库未声明开源许可证。  
-如果你计划公开分发，建议补充 `LICENSE` 文件（如 MIT）。
+---
+
+## 📄 License
+
+No license is currently specified.
+
+If you plan to distribute or reuse this project, consider adding a `LICENSE` file (e.g., MIT License).
+
