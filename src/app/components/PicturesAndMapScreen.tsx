@@ -87,6 +87,28 @@ function clampMapCenter(v: number, zoom: number) {
   return Math.min(100 - edge, Math.max(edge, v));
 }
 
+const demoRouteBuildingIds = ["fb", "cb", "sa", "sb", "sc", "sd"] as const;
+type DemoRouteBuildingId = (typeof demoRouteBuildingIds)[number];
+
+const demoRouteBuildingLabels: Record<DemoRouteBuildingId, string> = {
+  fb: "FB",
+  cb: "CB",
+  sa: "SA",
+  sb: "SB",
+  sc: "SC",
+  sd: "SD",
+};
+
+const demoRouteTargetIds = new Set<DemoRouteBuildingId>(["fb", "sa", "sb", "sc", "sd"]);
+
+function getDemoRouteTargetId(buildingCode: string): DemoRouteBuildingId | null {
+  const normalized = routePointAlias[buildingCode] ?? buildingCode;
+  if (normalized === "cb") return "cb";
+  return demoRouteTargetIds.has(normalized as DemoRouteBuildingId)
+    ? (normalized as DemoRouteBuildingId)
+    : null;
+}
+
 type MapTabKey = "map" | "live";
 type CampusConvenienceItem = { titleKey: string; icon: string; locationsKey: string };
 
@@ -1040,25 +1062,27 @@ export function PicturesAndMapScreen() {
         <div style={{ position: "absolute", inset: 0, zIndex: 50, backgroundColor: C.ice, display: "flex", flexDirection: "column" }}>
           {(() => {
             const locale = getLocale(selected);
-            const routeStart = getRouteMapPointByCode("cb") ?? { id: "cb", x: 42, y: 56 };
             const destinationCode = extractBuildingCode(locale.building);
-            const routeEnd = getRouteMapPointByCode(destinationCode) ?? routeStart;
-            const dx = routeEnd.x - routeStart.x;
-            const dy = routeEnd.y - routeStart.y;
-            const routeNeedsTurn = Math.abs(dx) > 2.5 && Math.abs(dy) > 2.5;
-            const routePoints = routeNeedsTurn
-              ? [routeStart, { id: "mid", x: routeEnd.x, y: routeStart.y }, routeEnd]
-              : [routeStart, routeEnd];
-            const centerX = (routeStart.x + routeEnd.x) / 2;
-            const centerY = (routeStart.y + routeEnd.y) / 2;
-            const routeSpread = Math.abs(dx) + Math.abs(dy);
-            const mapZoom = Math.max(1.85, Math.min(3.1, 2.9 - routeSpread / 28));
-            const clampedCenterX = clampMapCenter(centerX, mapZoom);
-            const clampedCenterY = clampMapCenter(centerY, mapZoom);
+            const routeStart = getRouteMapPointByCode("cb") ?? { id: "cb", x: 42, y: 56 };
+            const demoRoutePins = demoRouteBuildingIds
+              .map((id) => {
+                const point = getRouteMapPointByCode(id);
+                if (!point) return null;
+                return { id, ...point };
+              })
+              .filter((pin): pin is { id: DemoRouteBuildingId; x: number; y: number } => pin !== null);
+            const targetId = getDemoRouteTargetId(destinationCode);
+            const routeEnd = targetId ? getRouteMapPointByCode(targetId) ?? routeStart : routeStart;
+            const linePoints =
+              targetId && targetId !== "cb" && Math.abs(routeStart.y - routeEnd.y) > 1.5
+                ? [routeStart, { id: "mid", x: routeEnd.x, y: routeStart.y }, routeEnd]
+                : [routeStart, routeEnd];
+            const mapZoom = 3.15;
+            const clampedCenterX = clampMapCenter(51, mapZoom);
+            const clampedCenterY = clampMapCenter(53, mapZoom);
             const mapShiftX = 50 - clampedCenterX * mapZoom;
             const mapShiftY = 50 - clampedCenterY * mapZoom;
-            const distanceMeters = Math.max(60, Math.round(Math.hypot(dx, dy) * 8));
-            const startBuildingLabel = lang === "zh" ? "中央楼 (CB)" : "Central Building (CB)";
+            const distanceMeters = Math.max(60, Math.round(Math.hypot(routeEnd.x - routeStart.x, routeEnd.y - routeStart.y) * 8));
             return (
               <>
                 {/* Nav header */}
@@ -1223,7 +1247,7 @@ export function PicturesAndMapScreen() {
                                 </marker>
                               </defs>
                               <polyline
-                                points={routePoints.map((p) => `${p.x},${p.y}`).join(" ")}
+                                points={linePoints.map((p) => `${p.x},${p.y}`).join(" ")}
                                 stroke="#4B9EF7"
                                 strokeWidth="1.5"
                                 strokeLinecap="round"
@@ -1232,7 +1256,7 @@ export function PicturesAndMapScreen() {
                                 opacity="0.45"
                               />
                               <polyline
-                                points={routePoints.map((p) => `${p.x},${p.y}`).join(" ")}
+                                points={linePoints.map((p) => `${p.x},${p.y}`).join(" ")}
                                 stroke="#2350D8"
                                 strokeWidth="0.95"
                                 strokeLinecap="round"
@@ -1243,101 +1267,42 @@ export function PicturesAndMapScreen() {
                               />
                             </svg>
 
-                            <div
-                              style={{
-                                position: "absolute",
-                                left: `${routeStart.x}%`,
-                                top: `${routeStart.y}%`,
-                                transform: "translate(-50%, -100%)",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                pointerEvents: "none",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: "24px",
-                                  height: "24px",
-                                  borderRadius: "50%",
-                                  backgroundColor: C.mint,
-                                  border: `2px solid ${C.navy}`,
-                                  boxShadow: `2px 2px 0 ${C.navy}`,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  fontSize: "11px",
-                                  marginBottom: "3px",
-                                }}
-                              >
-                                📍
-                              </div>
-                              <div
-                                style={{
-                                  backgroundColor: C.white,
-                                  border: `1.5px solid ${C.navy}`,
-                                  borderRadius: "7px",
-                                  padding: "2px 7px",
-                                  fontSize: "9px",
-                                  fontWeight: 800,
-                                  color: C.navy,
-                                  whiteSpace: "nowrap",
-                                  boxShadow: `1.5px 1.5px 0 ${C.navy}`,
-                                }}
-                              >
-                                {startBuildingLabel}
-                              </div>
-                            </div>
-
-                            <div
-                              style={{
-                                position: "absolute",
-                                left: `${routeEnd.x}%`,
-                                top: `${routeEnd.y}%`,
-                                transform: "translate(-50%, -100%)",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                pointerEvents: "none",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: "24px",
-                                  height: "24px",
-                                  borderRadius: "50%",
-                                  backgroundColor: C.coral,
-                                  border: `2px solid ${C.navy}`,
-                                  boxShadow: `2px 2px 0 ${C.navy}`,
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  fontSize: "11px",
-                                  marginBottom: "3px",
-                                }}
-                              >
-                                🏛️
-                              </div>
-                              <div
-                                style={{
-                                  backgroundColor: C.yellow,
-                                  border: `1.5px solid ${C.navy}`,
-                                  borderRadius: "7px",
-                                  padding: "2px 7px",
-                                  fontSize: "9px",
-                                  fontWeight: 900,
-                                  color: C.navy,
-                                  whiteSpace: "nowrap",
-                                  maxWidth: "140px",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                  boxShadow: `1.5px 1.5px 0 ${C.navy}`,
-                                }}
-                                title={locale.building}
-                              >
-                                {locale.building}
-                              </div>
-                            </div>
+                            {demoRoutePins.map((pin) => {
+                              const isStart = pin.id === "cb";
+                              const isTarget = !!targetId && pin.id === targetId;
+                              return (
+                                <div
+                                  key={pin.id}
+                                  style={{
+                                    position: "absolute",
+                                    left: `${pin.x}%`,
+                                    top: `${pin.y}%`,
+                                    transform: "translate(-50%, -50%)",
+                                    pointerEvents: "none",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      minWidth: "38px",
+                                      height: "24px",
+                                      borderRadius: "8px",
+                                      backgroundColor: isTarget ? C.yellow : isStart ? C.mint : "rgba(255,255,255,0.92)",
+                                      border: `2px solid ${C.navy}`,
+                                      boxShadow: `2px 2px 0 ${C.navy}`,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      padding: "0 8px",
+                                      fontSize: "14px",
+                                      fontWeight: 900,
+                                      color: C.navy,
+                                    }}
+                                  >
+                                    {demoRouteBuildingLabels[pin.id]}
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
 
