@@ -89,6 +89,8 @@ const zh: Texts = {
   custom_detail: "📍 路线详情（距离优化）",
   custom_walk: "步行约 {n} 分钟",
   custom_start: "开始导览", custom_reselect: "重新选择", custom_start_pt: "起点",
+  custom_tap_set_start: "点选已选地点设为起点",
+  custom_set_start: "设为起点",
   custom_n_places: "{n} 个地点",
   custom_back: "路线探索",
   // Custom route — dining pins (bilingual via language toggle)
@@ -310,6 +312,8 @@ const en: Texts = {
   custom_detail: "📍 Route Details (Optimized)",
   custom_walk: "~{n} min walk",
   custom_start: "Start Tour", custom_reselect: "Reselect", custom_start_pt: "Start",
+  custom_tap_set_start: "Tap a selected place to set start",
+  custom_set_start: "Set as start",
   custom_n_places: "{n} place(s)",
   custom_back: "Route Explorer",
   profile_subtitle: "XJTLU · Freshman",
