@@ -1360,10 +1360,11 @@ export function PicturesAndMapScreen() {
                               {graphRoute.path.map((nid) => {
                                 const p = campusMapHotspots.find((h) => h.id === nid);
                                 if (!p) return null;
-                                const r = nid === routeNavStartId ? 2.2 : nid === endGraphId ? 2.2 : 1.2;
+                                /** 与 viewBox 0–100 同单位：约 1 = 地图宽度的 1%，数值越大圆越大 */
+                                const r = nid === routeNavStartId ? 1 : nid === endGraphId ? 1 : 0.55;
                                 const fill = nid === routeNavStartId ? C.mint : nid === endGraphId ? C.yellow : C.white;
                                 return (
-                                  <circle key={nid} cx={p.x} cy={p.y} r={r} fill={fill} stroke={C.navy} strokeWidth={0.45} />
+                                  <circle key={nid} cx={p.x} cy={p.y} r={r} fill={fill} stroke={C.navy} strokeWidth={0.28} />
                                 );
                               })}
                             </svg>
