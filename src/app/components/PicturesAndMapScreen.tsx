@@ -1360,11 +1360,31 @@ export function PicturesAndMapScreen() {
                               {graphRoute.path.map((nid) => {
                                 const p = campusMapHotspots.find((h) => h.id === nid);
                                 if (!p) return null;
-                                /** 与 viewBox 0–100 同单位：约 1 = 地图宽度的 1%，数值越大圆越大 */
-                                const r = nid === routeNavStartId ? 1 : nid === endGraphId ? 1 : 0.55;
+                                /** 与 viewBox 0–100 同单位：约 1 = 地图宽度的 1% */
+                                const isEndpoint = nid === routeNavStartId || nid === endGraphId;
+                                const r = isEndpoint ? 1 : 0.55;
                                 const fill = nid === routeNavStartId ? C.mint : nid === endGraphId ? C.yellow : C.white;
+                                const label = p.label;
+                                const fontSize = isEndpoint
+                                  ? (label.length <= 2 ? 1.02 : label.length === 3 ? 0.82 : 0.7)
+                                  : (label.length <= 2 ? 0.58 : label.length === 3 ? 0.5 : 0.44);
                                 return (
-                                  <circle key={nid} cx={p.x} cy={p.y} r={r} fill={fill} stroke={C.navy} strokeWidth={0.28} />
+                                  <g key={nid}>
+                                    <circle cx={p.x} cy={p.y} r={r} fill={fill} stroke={C.navy} strokeWidth={0.28} />
+                                    <text
+                                      x={p.x}
+                                      y={p.y}
+                                      textAnchor="middle"
+                                      dominantBaseline="central"
+                                      fill={C.navy}
+                                      fontSize={fontSize}
+                                      fontWeight={800}
+                                      fontFamily="system-ui, -apple-system, sans-serif"
+                                      style={{ pointerEvents: "none", userSelect: "none" }}
+                                    >
+                                      {label}
+                                    </text>
+                                  </g>
                                 );
                               })}
                             </svg>
