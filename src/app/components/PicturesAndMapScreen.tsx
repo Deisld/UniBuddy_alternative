@@ -1204,7 +1204,7 @@ export function PicturesAndMapScreen() {
 
                   <ComicCard style={{ padding: "12px", marginTop: "14px", marginBottom: "2px", backgroundColor: C.white }}>
                     <p style={{ fontSize: "11px", fontWeight: 800, color: "#4B6898", marginBottom: "8px" }}>
-                      {t("nav_start_pt")} · {t("nav_graph_pick_hint")}
+                      {t("nav_start_pt")} 
                     </p>
                     <select
                       value={routeNavStartId}
