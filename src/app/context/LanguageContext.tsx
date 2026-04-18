@@ -243,7 +243,6 @@ const zh: Texts = {
   nav_route_hint: "后续将接入真实定位与路径规划引擎",
   nav_planning: "正在规划路线…",
   nav_route_ready_btn: "路线已规划好 ✓",
-  nav_graph_pick_hint: "按楼间路网（Dijkstra）算最短路径",
   nav_path_highlight: "蓝线为最短步行路径（示意图连通）",
   nav_no_graph_path: "目标不在当前路网中，距离为直线估算。",
 };
@@ -467,7 +466,6 @@ const en: Texts = {
   nav_route_hint: "Real-time location & routing will be integrated later",
   nav_planning: "Planning route…",
   nav_route_ready_btn: "Route Ready ✓",
-  nav_graph_pick_hint: "Shortest path via building graph (Dijkstra)",
   nav_path_highlight: "Blue line: shortest walk on schematic links",
   nav_no_graph_path: "Target not on graph; distance is straight-line estimate.",
 };
