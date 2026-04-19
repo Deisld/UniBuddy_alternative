@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 import { detectBuildingCode } from "../data/buildingOcr";
-import { useLanguage } from "./LanguageContext";
 import { PRE_UNLOCKED_STAMP_IDS, STAMP_DEFS, TOTAL_STAMPS } from "../data/stamps";
 import { runBuildingOcrOnFile } from "../utils/runBuildingOcr";
 
@@ -108,7 +107,6 @@ const CameraContext = createContext<CameraCtx>({
 });
 
 export function CameraProvider({ children }: { children: ReactNode }) {
-  const { lang } = useLanguage();
   const [photos, setPhotos] = useState<CapturedPhoto[]>(() => getInitialCameraOnce().photos);
   const [showCamera, setShowCamera] = useState(false);
   const [unlockedStampIds, setUnlockedStampIds] = useState<number[]>(() => getInitialCameraOnce().unlockedStampIds);
@@ -141,7 +139,7 @@ export function CameraProvider({ children }: { children: ReactNode }) {
 
         let ocr = "";
         try {
-          ocr = await runBuildingOcrOnFile(file, lang);
+          ocr = await runBuildingOcrOnFile(file);
         } catch {
           ocr = "";
         }
@@ -177,7 +175,7 @@ export function CameraProvider({ children }: { children: ReactNode }) {
         setOcrScanning(false);
       }
     })();
-  }, [lang]);
+  }, []);
 
   const stampCheckedCount = unlockedStampIds.length;
 
