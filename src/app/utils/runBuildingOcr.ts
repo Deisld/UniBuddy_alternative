@@ -3,27 +3,21 @@ const silentLogger = () => {
 };
 
 /**
- * 楼宇识别用 OCR：与界面语言无关。
- * 对同一张照片并行跑 eng+chi_sim 与 eng，合并文本后再做 detectBuildingCode，
- * 这样中文/英文 App 下匹配规则一致；弹窗里的楼名与简介仍由当前语言的 t() 决定。
+ * 与中文界面相同的识别管线：优先 eng+chi_sim（中英标牌、中文楼名），失败或空结果再 eng。
+ * 界面语言只影响弹窗文案（LanguageContext），不影响 OCR。
  */
 export async function runBuildingOcrOnFile(file: File): Promise<string> {
   const { default: Tesseract } = await import("tesseract.js");
-  const opts = { logger: silentLogger };
+  const chain = ["eng+chi_sim", "eng"] as const;
 
-  const recognize = async (langTag: string): Promise<string> => {
+  for (const langTag of chain) {
     try {
-      const result = await Tesseract.recognize(file, langTag, opts);
-      return typeof result.data.text === "string" ? result.data.text : "";
+      const result = await Tesseract.recognize(file, langTag, { logger: silentLogger });
+      const text = typeof result.data.text === "string" ? result.data.text : "";
+      if (text.trim().length > 0) return text;
     } catch {
-      return "";
+      /* 尝试下一种 */
     }
-  };
-
-  const [bilingual, english] = await Promise.all([
-    recognize("eng+chi_sim"),
-    recognize("eng"),
-  ]);
-
-  return [bilingual, english].filter((s) => s.trim().length > 0).join("\n");
+  }
+  return "";
 }
