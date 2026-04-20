@@ -410,7 +410,22 @@ export function CustomRouteScreen() {
             {/* Buttons */}
             <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
               <button
-                onClick={() => navigate("/profile")}
+                onClick={() =>
+                  navigate("/pictures", {
+                    state: {
+                      guidedTour: {
+                        title: t("custom_my_route"),
+                        subtitle: t("custom_walk", { n: total }),
+                        points: route.map((b) => ({
+                          id: b.id,
+                          label: buildingDisplayLabel(b, t),
+                          x: b.mapX,
+                          y: b.mapY,
+                        })),
+                      },
+                    },
+                  })
+                }
                 style={{ flex: 1, height: "50px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", backgroundColor: C.royal, border: `2.5px solid ${C.navy}`, borderRadius: "14px", boxShadow: `4px 4px 0 ${C.navy}`, color: C.white, fontSize: "15px", fontWeight: 900, cursor: "pointer" }}
                 onMouseDown={(e) => (e.currentTarget.style.transform = "translate(2px,2px)")}
                 onMouseUp={(e) => (e.currentTarget.style.transform = "translate(0,0)")}
