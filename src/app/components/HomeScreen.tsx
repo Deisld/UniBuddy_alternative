@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { PhoneShell, StatusBar, ComicCard, Burst, SpeechBubble } from "./PhoneShell";
+import { PhoneShell, StatusBar, ComicCard, SpeechBubble } from "./PhoneShell";
 import { BottomNav } from "./BottomNav";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCamera } from "../context/CameraContext";
@@ -10,7 +10,7 @@ import { classrooms } from "../data/classroomData";
 import { SYSTEM_SCHOOL_COMMENTS, type SchoolPerspective } from "../data/schoolComments";
 import {
   IconBell, IconHeart, IconStamp, IconSparkle,
-  IconChevronRight, IconClock, IconPin, IconTrash, IconBack,
+  IconChevronRight, IconPin, IconTrash, IconBack,
 } from "./ComicIcons";
 
 const C = {
@@ -489,9 +489,9 @@ export function HomeScreen() {
                         </span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        {fav.duration && (
+                        {fav.type === "recommended" && fav.duration && (
                           <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
-                            <IconClock size={12} color={C.royal} />
+                            <span aria-hidden style={{ fontSize: "12px", lineHeight: 1 }}>⏱</span>
                             <span style={{ fontSize: "11px", fontWeight: 700, color: C.royal }}>{fav.duration}</span>
                           </div>
                         )}
@@ -541,9 +541,6 @@ export function HomeScreen() {
                     <p style={{ fontSize: "20px", fontWeight: 900, color: C.white, textShadow: `1px 1px 0 ${C.navy}` }}>
                       {selectedRoom.room}
                     </p>
-                  </div>
-                  <div style={{ marginLeft: "auto" }}>
-                    <Burst size={44} color={C.yellow} text={getLocale(selectedRoom).duration} textColor={C.navy} />
                   </div>
                 </div>
                 <div style={{ position: "relative", zIndex: 1, display: "flex", gap: "6px" }}>
@@ -716,7 +713,6 @@ export function HomeScreen() {
                             <span style={{ backgroundColor: C.sky, border: `1.5px solid ${C.navy}`, borderRadius: "6px", padding: "0 6px", fontSize: "10px", fontWeight: 900, color: C.white }}>{t("home_floor", { n: room.floor })}</span>
                           </div>
                           <p style={{ fontSize: "12px", fontWeight: 600, color: "#4B6898" }}>{getLocale(room).building}</p>
-                          <p style={{ fontSize: "11px", fontWeight: 700, color: C.royal, marginTop: "2px" }}>⏱ {getLocale(room).duration}</p>
                         </div>
                         <IconChevronRight size={16} color={C.navy} />
                       </button>
