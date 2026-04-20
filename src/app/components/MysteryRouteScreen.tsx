@@ -26,75 +26,75 @@ const optionsDefs = [
 const routeResultsDefs: Record<string, {
   id: string; titleKey: string; emoji: string; taglineKey: string;
   bg: string; stopDot: string;
-  stops: { nameKey: string; note: string }[];
+  stops: { nameKey: string; note: string; mapId: string }[];
 }> = {
   food: {
     id: "mystery-food", titleKey: "mystery_res_food", emoji: "🍜", taglineKey: "mystery_res_food_tag",
     bg: "#9BD1F6", stopDot: C.navy,
     stops: [
-      { nameKey: "stop_food_south_north_hongyuan", note: "start" },
-      { nameKey: "stop_food_tongfa", note: "mystery_note_stop_2" },
-      { nameKey: "stop_food_mersey_cafe", note: "mystery_note_stop_3" },
-      { nameKey: "stop_food_west_hall", note: "mystery_note_stop_4" },
-      { nameKey: "stop_food_east_hall", note: "mystery_note_stop_5" },
-      { nameKey: "stop_food_hungry", note: "mystery_note_stop_6" },
-      { nameKey: "stop_food_fb_subway", note: "mystery_note_stop_7" },
+      { nameKey: "stop_food_south_north_hongyuan", note: "start", mapId: "mb" },
+      { nameKey: "stop_food_tongfa", note: "mystery_note_stop_2", mapId: "ir" },
+      { nameKey: "stop_food_mersey_cafe", note: "mystery_note_stop_3", mapId: "cb" },
+      { nameKey: "stop_food_west_hall", note: "mystery_note_stop_4", mapId: "ir" },
+      { nameKey: "stop_food_east_hall", note: "mystery_note_stop_5", mapId: "ia" },
+      { nameKey: "stop_food_hungry", note: "mystery_note_stop_6", mapId: "hs" },
+      { nameKey: "stop_food_fb_subway", note: "mystery_note_stop_7", mapId: "fb" },
     ],
   },
   store: {
     id: "mystery-store", titleKey: "mystery_res_store", emoji: "🧃", taglineKey: "mystery_res_store_tag",
     bg: "#C7DA8E", stopDot: C.navy,
     stops: [
-      { nameKey: "stop_store_fb", note: "start" },
-      { nameKey: "stop_store_library_familymart", note: "mystery_note_stop_2" },
-      { nameKey: "stop_store_pb", note: "mystery_note_stop_3" },
-      { nameKey: "stop_store_ir", note: "mystery_note_stop_4" },
-      { nameKey: "stop_store_hs", note: "mystery_note_stop_5" },
+      { nameKey: "stop_store_fb", note: "start", mapId: "fb" },
+      { nameKey: "stop_store_library_familymart", note: "mystery_note_stop_2", mapId: "cb" },
+      { nameKey: "stop_store_pb", note: "mystery_note_stop_3", mapId: "pb" },
+      { nameKey: "stop_store_ir", note: "mystery_note_stop_4", mapId: "ir" },
+      { nameKey: "stop_store_hs", note: "mystery_note_stop_5", mapId: "hs" },
     ],
   },
   shuttle: {
     id: "mystery-shuttle", titleKey: "mystery_res_shuttle", emoji: "🛵", taglineKey: "mystery_res_shuttle_tag",
     bg: C.yellow, stopDot: C.navy,
     stops: [
-      { nameKey: "stop_shuttle_channel_1", note: "start" },
-      { nameKey: "stop_shuttle_channel_2", note: "mystery_note_stop_2" },
-      { nameKey: "stop_shuttle_main_road_gym", note: "mystery_note_cycle_recommended" },
+      { nameKey: "stop_shuttle_channel_1", note: "start", mapId: "cb" },
+      { nameKey: "stop_shuttle_channel_2", note: "mystery_note_stop_2", mapId: "ir" },
+      { nameKey: "stop_shuttle_main_road_gym", note: "mystery_note_cycle_recommended", mapId: "gym" },
     ],
   },
   sakura: {
     id: "mystery-sakura", titleKey: "mystery_res_sakura", emoji: "🌸", taglineKey: "mystery_res_sakura_tag",
     bg: "#FFC0D8", stopDot: C.navy,
     stops: [
-      { nameKey: "stop_sakura_s_building", note: "start" },
-      { nameKey: "stop_sakura_mb_gate", note: "mystery_note_stop_2" },
-      { nameKey: "stop_sakura_es", note: "mystery_note_add_more" },
+      { nameKey: "stop_sakura_s_building", note: "start", mapId: "sa" },
+      { nameKey: "stop_sakura_mb_gate", note: "mystery_note_stop_2", mapId: "mb" },
+      { nameKey: "stop_sakura_es", note: "mystery_note_add_more", mapId: "es" },
     ],
   },
   landmark: {
     id: "mystery-landmark", titleKey: "mystery_res_landmark", emoji: "🗿", taglineKey: "mystery_res_landmark_tag",
     bg: "#D2B5F5", stopDot: C.navy,
     stops: [
-      { nameKey: "stop_landmark_fb_lawn_statue", note: "start" },
-      { nameKey: "stop_landmark_liverpool_ship", note: "mystery_note_stop_2" },
-      { nameKey: "stop_landmark_small_white_pavilion", note: "mystery_note_stop_3" },
-      { nameKey: "stop_landmark_channel_graffiti", note: "mystery_note_stop_4" },
-      { nameKey: "stop_landmark_south_cat_statue", note: "mystery_note_stop_5" },
-      { nameKey: "stop_landmark_south_lake", note: "mystery_note_stop_6" },
+      { nameKey: "stop_landmark_fb_lawn_statue", note: "start", mapId: "fb" },
+      { nameKey: "stop_landmark_liverpool_ship", note: "mystery_note_stop_2", mapId: "cb" },
+      { nameKey: "stop_landmark_small_white_pavilion", note: "mystery_note_stop_3", mapId: "sa" },
+      { nameKey: "stop_landmark_channel_graffiti", note: "mystery_note_stop_4", mapId: "ir" },
+      { nameKey: "stop_landmark_south_cat_statue", note: "mystery_note_stop_5", mapId: "hs" },
+      { nameKey: "stop_landmark_south_lake", note: "mystery_note_stop_6", mapId: "bs" },
     ],
   },
   study: {
     id: "mystery-study", titleKey: "mystery_res_study", emoji: "🧠", taglineKey: "mystery_res_study_tag",
     bg: C.pale, stopDot: C.royal,
     stops: [
-      { nameKey: "stop_study_daily_cb", note: "start" },
-      { nameKey: "stop_study_daily_fb", note: "mystery_note_stop_2" },
-      { nameKey: "stop_study_daily_bs", note: "mystery_note_stop_3" },
-      { nameKey: "stop_study_daily_zemo", note: "mystery_note_stop_4" },
-      { nameKey: "stop_study_daily_mersey", note: "mystery_note_stop_5" },
-      { nameKey: "stop_study_small_classrooms", note: "mystery_note_stop_6" },
-      { nameKey: "stop_study_lecture_halls", note: "mystery_note_stop_7" },
-      { nameKey: "stop_study_computer_rooms", note: "mystery_note_stop_8" },
-      { nameKey: "stop_study_overnight_fb_cb_eb_ma_sa_bs", note: "mystery_note_overnight" },
+      { nameKey: "stop_study_daily_cb", note: "start", mapId: "cb" },
+      { nameKey: "stop_study_daily_fb", note: "mystery_note_stop_2", mapId: "fb" },
+      { nameKey: "stop_study_daily_bs", note: "mystery_note_stop_3", mapId: "bs" },
+      { nameKey: "stop_study_daily_zemo", note: "mystery_note_stop_4", mapId: "eb" },
+      { nameKey: "stop_study_daily_mersey", note: "mystery_note_stop_5", mapId: "cb" },
+      { nameKey: "stop_study_small_classrooms", note: "mystery_note_stop_6", mapId: "sa" },
+      { nameKey: "stop_study_lecture_halls", note: "mystery_note_stop_7", mapId: "pb" },
+      { nameKey: "stop_study_computer_rooms", note: "mystery_note_stop_8", mapId: "ee" },
+      { nameKey: "stop_study_overnight_fb_cb_eb_ma_sa_bs", note: "mystery_note_overnight", mapId: "ma" },
     ],
   },
 };
@@ -236,7 +236,20 @@ export function MysteryRouteScreen() {
             {/* Buttons */}
             <div style={{ display: "flex", gap: "10px" }}>
               <button
-                onClick={() => navigate("/profile")}
+                onClick={() =>
+                  navigate("/pictures", {
+                    state: {
+                      guidedTour: {
+                        title: t(resultDef.titleKey),
+                        subtitle: t(resultDef.taglineKey),
+                        points: resultDef.stops.map((stop) => ({
+                          id: stop.mapId,
+                          label: t(stop.nameKey),
+                        })),
+                      },
+                    },
+                  })
+                }
                 style={{ flex: 1, height: "50px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", backgroundColor: C.royal, border: `2.5px solid ${C.navy}`, borderRadius: "14px", boxShadow: `4px 4px 0 ${C.navy}`, color: C.white, fontSize: "15px", fontWeight: 900, cursor: "pointer" }}
                 onMouseDown={(e) => (e.currentTarget.style.transform = "translate(2px,2px)")}
                 onMouseUp={(e) => (e.currentTarget.style.transform = "translate(0,0)")}
