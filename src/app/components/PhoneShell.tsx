@@ -1,4 +1,5 @@
 import { type ReactNode, useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -49,10 +50,16 @@ export function PhoneShell({
 function CameraOverlay() {
   const { showCamera, closeCamera, photos, addPhotos, removePhoto, lastUnlockEvent, dismissUnlockEvent, ocrScanning } = useCamera();
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const albumInputRef = useRef<HTMLInputElement>(null);
   const [toast, setToast] = useState<string | null>(null);
   const prevEventIdRef = useRef<number | null>(null);
+
+  const goToBadges = () => {
+    closeCamera();
+    navigate("/profile");
+  };
 
   useEffect(() => {
     if (!lastUnlockEvent) return;
@@ -98,6 +105,25 @@ function CameraOverlay() {
             <p style={{ fontSize: "20px", fontWeight: 900, color: C.white, textShadow: `1px 1px 0 ${C.navy}` }}>{t("camera_title")}</p>
           </div>
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "6px" }}>
+            <button
+              type="button"
+              onClick={goToBadges}
+              style={{
+                height: "30px",
+                padding: "0 10px",
+                borderRadius: "10px",
+                border: `1.5px solid ${C.navy}`,
+                backgroundColor: C.white,
+                color: C.navy,
+                fontSize: "11px",
+                fontWeight: 900,
+                cursor: "pointer",
+                boxShadow: `2px 2px 0 ${C.navy}`,
+                whiteSpace: "nowrap",
+              }}
+            >
+              🏅 {t("profile_tab_stamps")}
+            </button>
             <div style={{ backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`, borderRadius: "20px", padding: "3px 12px", fontSize: "12px", fontWeight: 900, color: C.navy }}>
               {t("camera_count", { n: photos.length })}
             </div>
