@@ -509,6 +509,7 @@ export function PicturesAndMapScreen() {
   const [mapTab, setMapTab] = useState<MapTabKey>("map");
   const [activeHotspotId, setActiveHotspotId] = useState("cb");
   const [locationStatus, setLocationStatus] = useState("");
+  const [showGuidedNotice, setShowGuidedNotice] = useState(false);
 
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<typeof classrooms[0] | null>(null);
@@ -527,6 +528,8 @@ export function PicturesAndMapScreen() {
   /** 教室导航路网起点（与示意图邻接表一致） */
   const [routeNavStartId, setRouteNavStartId] = useState("cb");
   const routeSectionRef = useRef<HTMLDivElement>(null);
+  const mapSectionRef = useRef<HTMLDivElement>(null);
+  const guidedNoticeShownRef = useRef(false);
 
   // Reset route state whenever a different room is selected
   useEffect(() => {
@@ -568,6 +571,7 @@ export function PicturesAndMapScreen() {
           guidedExit: "退出导览",
           guidedSteps: "站点顺序",
           guidedHint: "已按所选路线在地图上连线展示",
+          guidedNotice: "导览路线已生成，请通过校园地图查看。",
           liveTip: "地图数据来自 OpenStreetMap，定位需浏览器授权且建议在 HTTPS 环境使用。",
         }
       : {
@@ -596,6 +600,7 @@ export function PicturesAndMapScreen() {
           guidedExit: "Exit",
           guidedSteps: "Stops",
           guidedHint: "Selected stops are connected on the map",
+          guidedNotice: "The guided route is ready. Please view it on the campus map.",
           liveTip: "Map data is provided by OpenStreetMap. Browser permission and HTTPS are recommended.",
         };
 
@@ -628,9 +633,14 @@ export function PicturesAndMapScreen() {
   })();
 
   useEffect(() => {
-    if (!guidedPoints.length) return;
+    if (!guidedPoints.length || guidedNoticeShownRef.current) return;
+    guidedNoticeShownRef.current = true;
     setMapTab("map");
     setActiveHotspotId(guidedPoints[0].id);
+    setShowGuidedNotice(true);
+    window.setTimeout(() => {
+      mapSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
   }, [guidedPoints]);
 
   const bodeSrc = `${import.meta.env.BASE_URL}bode.png`;
@@ -921,7 +931,9 @@ export function PicturesAndMapScreen() {
         </div>
 
         {/* ── Map ── */}
-        <SectionLabel color={C.sky} text={t("map_map")} />
+        <div ref={mapSectionRef}>
+          <SectionLabel color={C.sky} text={t("map_map")} />
+        </div>
 
         <div style={{ display: "flex", gap: "6px", marginBottom: "10px" }}>
           {mapTabs.map((tab) => (
@@ -1420,6 +1432,59 @@ export function PicturesAndMapScreen() {
         onClose={() => setLightbox(null)}
         lang={lang}
       />
+
+      {showGuidedNotice && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 55,
+            backgroundColor: "rgba(14, 27, 77, 0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "18px",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "320px",
+              backgroundColor: C.white,
+              border: `2.5px solid ${C.navy}`,
+              borderRadius: "16px",
+              boxShadow: `5px 5px 0 ${C.navy}`,
+              padding: "14px 14px 12px",
+            }}
+          >
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`, borderRadius: "999px", padding: "2px 10px", fontSize: "11px", fontWeight: 900, color: C.navy, marginBottom: "10px" }}>
+              <span>🗺️</span>
+              <span>{mapCopy.guidedTag}</span>
+            </div>
+            <p style={{ fontSize: "13px", fontWeight: 800, color: C.navy, lineHeight: 1.5, marginBottom: "12px" }}>
+              {mapCopy.guidedNotice}
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowGuidedNotice(false)}
+              style={{
+                width: "100%",
+                height: "38px",
+                borderRadius: "10px",
+                border: `2px solid ${C.navy}`,
+                backgroundColor: C.royal,
+                color: C.white,
+                fontSize: "13px",
+                fontWeight: 800,
+                cursor: "pointer",
+                boxShadow: `2px 2px 0 ${C.navy}`,
+              }}
+            >
+              {t("camera_dialog_ok")}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── Navigation Detail Overlay ── */}
       {selected && (
