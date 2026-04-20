@@ -126,20 +126,6 @@ function generateRoute(sel: BuildingDef[]): BuildingDef[] {
   return route;
 }
 
-/** 百分比距离 → 步行分钟（经验系数，与地图比例大致匹配观感） */
-function mapDistToWalkMinutes(a: BuildingDef, b: BuildingDef) {
-  const d = mapDist(a, b);
-  return Math.max(2, Math.round(d * 0.22));
-}
-
-function calcTime(route: BuildingDef[]): number {
-  let time = 0;
-  for (let i = 0; i < route.length - 1; i++) {
-    time += mapDistToWalkMinutes(route[i], route[i + 1]);
-  }
-  return time;
-}
-
 /** 将用户所选地点排成 [起点, …其余]，再交给 generateRoute */
 function selectionWithStart(selected: BuildingDef[], startId: string): BuildingDef[] {
   const start = selected.find((b) => b.id === startId) ?? selected[0];
@@ -206,8 +192,6 @@ export function CustomRouteScreen() {
     setRoute(null);
     setPhase("select");
   };
-
-  const total = route ? calcTime(route) : 0;
 
   return (
     <PhoneShell bg={C.ice}>
@@ -372,7 +356,6 @@ export function CustomRouteScreen() {
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {[
                     `📍 ${t("custom_n_places", { n: route.length })}`,
-                    `⏱ ${t("custom_walk", { n: total })}`,
                     ...(fav ? ["❤️"] : []),
                   ].map((tag) => (
                     <div key={tag} style={{ backgroundColor: "rgba(255,255,255,0.2)", border: `1.5px solid rgba(255,255,255,0.4)`, borderRadius: "20px", padding: "2px 10px", fontSize: "12px", fontWeight: 800, color: C.white }}>{tag}</div>
@@ -415,7 +398,6 @@ export function CustomRouteScreen() {
                     state: {
                       guidedTour: {
                         title: t("custom_my_route"),
-                        subtitle: t("custom_walk", { n: total }),
                         points: route.map((b) => ({
                           id: b.id,
                           label: buildingDisplayLabel(b, t),
@@ -437,7 +419,6 @@ export function CustomRouteScreen() {
                 onClick={() => route && toggleFavorite({
                   id: routeId, title: t("custom_my_route").replace("🧩 ", ""),
                   emoji: "🧩", type: "custom",
-                  duration: t("custom_walk", { n: total }),
                   stops: route.map((b) => buildingDisplayLabel(b, t)),
                   bg: C.pale, tagBg: C.sky, tagLabel: t("type_custom"),
                 })}
