@@ -15,6 +15,8 @@ const C = {
   mint: "#5EEAA8", purple: "#7B5CF5", white: "#FFFFFF",
 };
 
+type RouteStopPoint = { id: string; x?: number; y?: number };
+
 const routeDefs = [
   {
     id: "freshman",
@@ -29,7 +31,15 @@ const routeDefs = [
       "stop_rec_lake_plaza",
       "stop_gym",
     ],
-    stopMapIds: ["ls", "fb", "cb", "sa", "ir", "cb", "gym"],
+    stopMapPoints: [
+      { id: "fb", x: 41, y: 34 }, // 北门：FB 上方
+      { id: "fb" },
+      { id: "cb" },
+      { id: "ee", x: 56, y: 63 }, // 小白亭广场：EE 左侧
+      { id: "ia", x: 62, y: 69 }, // 东西汇廊：EE 与 IA 之间
+      { id: "ir", x: 58, y: 78 }, // 中心湖广场：IR/IA/BS/HS 中间
+      { id: "gym" },
+    ] satisfies RouteStopPoint[],
     emoji: "🌱", bg: C.pale, tagBg: C.sky,
   },
   {
@@ -42,7 +52,12 @@ const routeDefs = [
       "stop_rec_orient_occident",
       "stop_rec_lake_plaza",
     ],
-    stopMapIds: ["ls", "sa", "ir", "cb"],
+    stopMapPoints: [
+      { id: "fb", x: 41, y: 34 }, // 北门：FB 上方
+      { id: "sa" },
+      { id: "ia", x: 62, y: 69 }, // 东西汇廊：EE 与 IA 之间
+      { id: "ir", x: 58, y: 78 }, // 中心湖广场：IR/IA/BS/HS 中间
+    ] satisfies RouteStopPoint[],
     emoji: "🏫", bg: C.cream, tagBg: C.yellow,
   },
   {
@@ -60,7 +75,17 @@ const routeDefs = [
       "stop_rec_ibss",
       "stop_gym",
     ],
-    stopMapIds: ["ls", "fb", "cb", "cb", "sa", "ir", "cb", "bs", "gym"],
+    stopMapPoints: [
+      { id: "fb", x: 41, y: 34 }, // 北门：FB 上方
+      { id: "fb" },
+      { id: "cb" },
+      { id: "cb" },
+      { id: "ee", x: 56, y: 63 }, // 小白亭广场：EE 左侧
+      { id: "ia", x: 62, y: 69 }, // 东西汇廊：EE 与 IA 之间
+      { id: "ir", x: 58, y: 78 }, // 中心湖广场：IR/IA/BS/HS 中间
+      { id: "bs" },
+      { id: "gym" },
+    ] satisfies RouteStopPoint[],
     emoji: "✨", bg: C.mint + "55", tagBg: C.mint,
   },
 ];
@@ -154,9 +179,11 @@ export function RouteScreen() {
             const stops = routeDef.stopKeys.map((k) => t(k));
             const title = t(routeDef.titleKey);
             const durationLabel = t(routeDef.durationKey);
-            const tourPoints = routeDef.stopMapIds.map((id, idx) => ({
-              id,
+            const tourPoints = routeDef.stopMapPoints.map((point, idx) => ({
+              id: point.id,
               label: stops[idx] ?? `${idx + 1}`,
+              x: point.x,
+              y: point.y,
             }));
             return (
               <div key={routeDef.id}>
