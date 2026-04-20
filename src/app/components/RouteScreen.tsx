@@ -18,17 +18,35 @@ const C = {
 const routeDefs = [
   {
     id: "freshman", titleKey: "route_freshman", duration: "30 min",
-    stopKeys: ["stop_gate", "stop_admin", "stop_library", "stop_square"],
+    stopKeys: [
+      "stop_rec_north_sign",
+      "stop_admin",
+      "stop_library",
+      "stop_rec_white_pavilion_plaza",
+      "stop_rec_orient_occident",
+      "stop_rec_lake_plaza",
+      "stop_gym",
+    ],
     emoji: "🌱", bg: C.pale, tagBg: C.sky,
   },
   {
     id: "parent", titleKey: "route_parent", duration: "40 min",
-    stopKeys: ["stop_maingate", "stop_teaching_complex", "stop_dorm", "stop_gym", "stop_canteen"],
+    stopKeys: ["stop_rec_north_sign", "stop_teaching_complex", "stop_rec_orient_occident", "stop_rec_lake_plaza"],
     emoji: "🏫", bg: C.cream, tagBg: C.yellow,
   },
   {
     id: "deep", titleKey: "route_deep", duration: "35 min",
-    stopKeys: ["stop_history", "stop_art", "stop_lake", "stop_research"],
+    stopKeys: [
+      "stop_rec_north_sign",
+      "stop_admin",
+      "stop_library",
+      "stop_rec_history_cb_g",
+      "stop_rec_white_pavilion_plaza",
+      "stop_rec_orient_occident",
+      "stop_rec_lake_plaza",
+      "stop_rec_ibss",
+      "stop_gym",
+    ],
     emoji: "✨", bg: C.mint + "55", tagBg: C.mint,
   },
 ];
