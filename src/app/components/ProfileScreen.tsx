@@ -8,7 +8,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { STAMP_DEFS } from "../data/stamps";
 import {
   IconStamp, IconHeart, IconSparkle,
-  IconClock, IconPin, IconCheck,
+  IconPin, IconCheck,
 } from "./ComicIcons";
 import {
   EGradCap, ECamera, ESparkle, EmojiDisplay,
@@ -328,9 +328,9 @@ export function ProfileScreen() {
                           </span>
                         </div>
                         <div style={{ display: "flex", gap: "8px" }}>
-                          {fav.duration && (
+                          {fav.type === "recommended" && fav.duration && (
                             <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
-                              <IconClock size={12} color={C.royal} />
+                              <span aria-hidden style={{ fontSize: "12px", lineHeight: 1 }}>⏱</span>
                               <span style={{ fontSize: "11px", fontWeight: 700, color: C.royal }}>{fav.duration}</span>
                             </div>
                           )}
