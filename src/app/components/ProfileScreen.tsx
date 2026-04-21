@@ -5,9 +5,9 @@ import { BottomNav } from "./BottomNav";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
-import { STAMP_DEFS } from "../data/stamps";
+import { BADGE_DEFS } from "../data/stamps";
 import {
-  IconStamp, IconHeart, IconSparkle,
+  IconBadge, IconHeart, IconSparkle,
   IconPin, IconCheck,
 } from "./ComicIcons";
 import {
@@ -20,7 +20,7 @@ const C = {
   mint: "#5EEAA8", purple: "#7B5CF5", white: "#FFFFFF",
 };
 
-type TabKey = "stamps" | "favorites";
+type TabKey = "badges" | "favorites";
 
 const typeColor: Record<string, string> = { recommended: C.sky, mystery: C.purple, custom: C.sky };
 
@@ -29,9 +29,9 @@ const NAME_KEY = "unibuddy_username";
 export function ProfileScreen() {
   const navigate = useNavigate();
   const { favorites, removeFavorite } = useFavorites();
-  const { stampCheckedCount, photos, openCamera, unlockedStampIds } = useCamera();
+  const { badgeCheckedCount, photos, openCamera, unlockedBadgeIds } = useCamera();
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState<TabKey>("stamps");
+  const [activeTab, setActiveTab] = useState<TabKey>("badges");
 
   /* ── Editable name ── */
   const [userName, setUserName] = useState<string>(() => {
@@ -60,9 +60,9 @@ export function ProfileScreen() {
     setIsEditingName(false);
   };
 
-  const stamps = STAMP_DEFS.map((stamp) => ({
-    ...stamp,
-    checked: unlockedStampIds.includes(stamp.id),
+  const badges = BADGE_DEFS.map((badge) => ({
+    ...badge,
+    checked: unlockedBadgeIds.includes(badge.id),
   }));
 
   const typeLabel: Record<string, string> = {
@@ -174,7 +174,7 @@ export function ProfileScreen() {
           {/* Stats */}
           <div style={{ display: "flex", gap: "10px" }}>
             {[
-              { label: t("profile_stamps"), value: `${stampCheckedCount}`, bg: C.pale, color: C.royal },
+              { label: t("profile_stamps"), value: `${badgeCheckedCount}`, bg: C.pale, color: C.royal },
               { label: t("profile_photos"), value: `${photos.length}`,     bg: C.ice,  color: C.royal },
               { label: t("profile_favs"),   value: `${favorites.length}`,  bg: C.mint, color: C.navy  },
             ].map((s) => (
@@ -190,7 +190,7 @@ export function ProfileScreen() {
       {/* ── Tab bar ── */}
       <div style={{ display: "flex", borderBottom: `2.5px solid ${C.navy}`, backgroundColor: C.cream, flexShrink: 0 }}>
         {([
-          { key: "stamps" as TabKey,    label: t("profile_tab_stamps"), icon: <IconStamp size={15} filled={activeTab === "stamps"} /> },
+          { key: "badges" as TabKey,    label: t("profile_tab_stamps"), icon: <IconBadge size={15} filled={activeTab === "badges"} /> },
           { key: "favorites" as TabKey, label: t("profile_tab_favs"),   icon: <IconHeart size={15} filled={activeTab === "favorites"} color={C.coral} /> },
         ]).map((tab, i) => (
           <button
@@ -216,23 +216,23 @@ export function ProfileScreen() {
       {/* ── Content ── */}
       <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4" style={{ paddingBottom: "28px" }}>
 
-        {/* ── STAMPS TAB ── */}
-        {activeTab === "stamps" && (
+        {/* ── BADGES TAB ── */}
+        {activeTab === "badges" && (
           <>
             <ComicCard style={{ padding: "14px", marginBottom: "14px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                 <span style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>{t("profile_progress")}</span>
-                <span style={{ fontSize: "13px", fontWeight: 900, color: C.royal }}>{stampCheckedCount} / {stamps.length}</span>
+                <span style={{ fontSize: "13px", fontWeight: 900, color: C.royal }}>{badgeCheckedCount} / {badges.length}</span>
               </div>
               <div style={{ width: "100%", height: "14px", backgroundColor: C.ice, border: `2px solid ${C.navy}`, borderRadius: "20px", overflow: "hidden" }}>
-                <div style={{ height: "100%", backgroundColor: C.royal, width: `${(stampCheckedCount / stamps.length) * 100}%`, transition: "width 0.4s ease", borderRight: stampCheckedCount < stamps.length ? `2px solid ${C.navy}` : "none" }} />
+                <div style={{ height: "100%", backgroundColor: C.royal, width: `${(badgeCheckedCount / badges.length) * 100}%`, transition: "width 0.4s ease", borderRight: badgeCheckedCount < badges.length ? `2px solid ${C.navy}` : "none" }} />
               </div>
               <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", marginTop: "6px" }}>
-                {t("profile_remaining", { n: stamps.length - stampCheckedCount })}
+                {t("profile_remaining", { n: badges.length - badgeCheckedCount })}
               </p>
             </ComicCard>
 
-            {/* Hint: take photos to unlock stamps */}
+            {/* Hint: take photos to unlock badges */}
             <div style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: C.yellow + "55", border: `1.5px solid ${C.yellow}`, borderRadius: "12px", padding: "8px 12px", marginBottom: "12px" }}>
               <ECamera size={20} color={C.navy} />
               <p style={{ fontSize: "11px", fontWeight: 700, color: C.navy, lineHeight: 1.5 }}>
@@ -248,26 +248,26 @@ export function ProfileScreen() {
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
-              {stamps.map((stamp) => (
+              {badges.map((badge) => (
                 <div
-                  key={stamp.id}
+                  key={badge.id}
                   style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}
                 >
                   <div style={{
                     width: "72px", height: "72px", position: "relative",
-                    border: stamp.checked ? `2.5px solid ${C.royal}` : `2.5px dashed ${C.pale}`,
+                    border: badge.checked ? `2.5px solid ${C.royal}` : `2.5px dashed ${C.pale}`,
                     borderRadius: "16px",
-                    boxShadow: stamp.checked ? `3px 3px 0 ${C.royal}` : "none",
-                    opacity: stamp.checked ? 1 : 0.3,
+                    boxShadow: badge.checked ? `3px 3px 0 ${C.royal}` : "none",
+                    opacity: badge.checked ? 1 : 0.3,
                     overflow: "hidden",
-                    backgroundColor: stamp.checked ? C.white : "#F8FAFC",
+                    backgroundColor: badge.checked ? C.white : "#F8FAFC",
                   }}>
                     <img
-                      src={`${import.meta.env.BASE_URL}${stamp.imagePath}`}
-                      alt={`badge-${stamp.id}`}
+                      src={`${import.meta.env.BASE_URL}${badge.imagePath}`}
+                      alt={`badge-${badge.id}`}
                       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                     />
-                    {stamp.checked && (
+                    {badge.checked && (
                       <div style={{ position: "absolute", bottom: "3px", right: "3px", width: "18px", height: "18px", borderRadius: "50%", backgroundColor: C.royal, display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <IconCheck size={10} color="white" />
                       </div>
