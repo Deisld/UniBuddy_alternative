@@ -5,6 +5,7 @@ import { BottomNav } from "./BottomNav";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
+import { askUniAIBuddy } from "../services/uniaibuddy";
 import { STAMP_DEFS } from "../data/stamps";
 import { classrooms } from "../data/classroomData";
 import { SYSTEM_SCHOOL_COMMENTS, type SchoolPerspective } from "../data/schoolComments";
@@ -82,6 +83,21 @@ export function HomeScreen() {
   const [userComments, setUserComments] = useState<UserSchoolComment[]>([]);
   const [draftText, setDraftText] = useState("");
   const [isCommentsExpanded, setIsCommentsExpanded] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiAnswer, setAiAnswer] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleAskUniAIBuddy = async () => {
+    const q = aiQuestion.trim();
+    if (!q || aiLoading) return;
+    setAiLoading(true);
+    try {
+      const answer = await askUniAIBuddy(q, lang);
+      setAiAnswer(answer);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -212,6 +228,74 @@ export function HomeScreen() {
               </div>
             </div>
           </ComicCard>
+
+        <SectionLabel color={C.purple} text="UniAIBuddy" icon={<IconSparkle size={18} />} />
+
+        <ComicCard style={{ padding: "14px", backgroundColor: "#EFE8FF", marginBottom: "18px" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "10px" }}>
+            <span style={{ fontSize: "24px", lineHeight: 1 }}>🤖</span>
+            <div>
+              <p style={{ fontSize: "13px", fontWeight: 900, color: C.navy, marginBottom: "3px" }}>
+                {lang === "zh" ? "问我系统内的问题" : "Ask me system questions"}
+              </p>
+              <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.45 }}>
+                {lang === "zh"
+                  ? "基于知识库关键词检索 + DeepSeek 回答。"
+                  : "Keyword retrieval over knowledge base + DeepSeek response."}
+              </p>
+            </div>
+          </div>
+
+          <textarea
+            value={aiQuestion}
+            onChange={(e) => setAiQuestion(e.target.value)}
+            rows={3}
+            placeholder={lang === "zh" ? "例如：怎么开启实时定位？" : "e.g. How to start live location?"}
+            style={{
+              width: "100%",
+              backgroundColor: C.white,
+              border: `2.5px solid ${C.navy}`,
+              borderRadius: "12px",
+              padding: "10px",
+              fontSize: "13px",
+              fontWeight: 600,
+              color: C.navy,
+              outline: "none",
+              resize: "none",
+              boxSizing: "border-box",
+            }}
+          />
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "10px" }}>
+            <button
+              type="button"
+              onClick={handleAskUniAIBuddy}
+              disabled={!aiQuestion.trim() || aiLoading}
+              style={{
+                height: "36px",
+                minWidth: "88px",
+                padding: "0 14px",
+                borderRadius: "12px",
+                cursor: !aiQuestion.trim() || aiLoading ? "not-allowed" : "pointer",
+                backgroundColor: !aiQuestion.trim() || aiLoading ? "#B7C7E9" : C.royal,
+                border: `2px solid ${C.navy}`,
+                boxShadow: !aiQuestion.trim() || aiLoading ? "none" : `2px 2px 0 ${C.navy}`,
+                color: C.white,
+                fontSize: "12px",
+                fontWeight: 900,
+              }}
+            >
+              {aiLoading ? (lang === "zh" ? "回答中..." : "Thinking...") : (lang === "zh" ? "提问" : "Ask")}
+            </button>
+          </div>
+          {aiAnswer && (
+            <div style={{ marginTop: "10px", backgroundColor: C.white, border: `2px solid ${C.navy}`, borderRadius: "12px", padding: "10px", boxShadow: `2px 2px 0 ${C.pale}` }}>
+              <p style={{ fontSize: "12px", fontWeight: 900, color: C.navy, marginBottom: "5px" }}>UniAIBuddy</p>
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "#355087", lineHeight: 1.55, whiteSpace: "pre-wrap" }}>
+                {aiAnswer}
+              </p>
+            </div>
+          )}
+        </ComicCard>
 
         <SectionLabel color={C.yellow} text={t("home_nav")} icon={<IconSparkle size={18} />} />
 
