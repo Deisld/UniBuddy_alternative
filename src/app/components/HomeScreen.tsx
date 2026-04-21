@@ -6,11 +6,11 @@ import { useFavorites } from "../context/FavoritesContext";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
 import { askUniAIBuddy, type UniAIBuddyChatMessage } from "../services/uniaibuddy";
-import { STAMP_DEFS } from "../data/stamps";
+import { BADGE_DEFS } from "../data/stamps";
 import { classrooms } from "../data/classroomData";
 import { SYSTEM_SCHOOL_COMMENTS, type SchoolPerspective } from "../data/schoolComments";
 import {
-  IconBell, IconHeart, IconStamp, IconSparkle,
+  IconBell, IconHeart, IconBadge, IconSparkle,
   IconChevronRight, IconPin, IconTrash, IconBack,
 } from "./ComicIcons";
 
@@ -38,13 +38,13 @@ type UserSchoolComment = {
 export function HomeScreen() {
   const navigate = useNavigate();
   const { favorites, removeFavorite } = useFavorites();
-  const { stampCheckedCount, unlockedStampIds } = useCamera();
+  const { badgeCheckedCount, unlockedBadgeIds } = useCamera();
   const { lang, toggle, t } = useLanguage();
-  const checkedCount = stampCheckedCount;
+  const checkedCount = badgeCheckedCount;
 
-  const stampPreview = STAMP_DEFS.slice(0, 6).map((stamp) => ({
-    ...stamp,
-    checked: unlockedStampIds.includes(stamp.id),
+  const badgePreview = BADGE_DEFS.slice(0, 6).map((badge) => ({
+    ...badge,
+    checked: unlockedBadgeIds.includes(badge.id),
   }));
 
   const typeLabel: Record<string, string> = {
@@ -498,23 +498,23 @@ export function HomeScreen() {
           )}
         </ComicCard>
 
-        <SectionLabel color={C.sky} text={t("home_stamp_section")} icon={<IconStamp size={18} filled />} />
+        <SectionLabel color={C.sky} text={t("home_stamp_section")} icon={<IconBadge size={18} filled />} />
 
         <ComicCard style={{ padding: "14px", marginBottom: "6px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
             <span style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>{t("home_stamp_label")}</span>
-            <span style={{ fontSize: "13px", fontWeight: 900, color: C.royal }}>{checkedCount} / {STAMP_DEFS.length}</span>
+            <span style={{ fontSize: "13px", fontWeight: 900, color: C.royal }}>{checkedCount} / {BADGE_DEFS.length}</span>
           </div>
           <div style={{ width: "100%", height: "12px", backgroundColor: C.ice, border: `2px solid ${C.navy}`, borderRadius: "20px", overflow: "hidden", marginBottom: "12px" }}>
-            <div style={{ height: "100%", backgroundColor: C.royal, width: `${(checkedCount / STAMP_DEFS.length) * 100}%`, borderRight: checkedCount < STAMP_DEFS.length ? `2px solid ${C.navy}` : "none" }} />
+            <div style={{ height: "100%", backgroundColor: C.royal, width: `${(checkedCount / BADGE_DEFS.length) * 100}%`, borderRight: checkedCount < BADGE_DEFS.length ? `2px solid ${C.navy}` : "none" }} />
           </div>
           <div style={{ display: "flex", gap: "8px", justifyContent: "space-between" }}>
-            {stampPreview.map((stamp) => (
-              <div key={stamp.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
-                <div style={{ width: "38px", height: "38px", border: stamp.checked ? `2px solid ${C.royal}` : `2px dashed ${C.pale}`, borderRadius: "10px", boxShadow: stamp.checked ? `2px 2px 0 ${C.royal}` : "none", overflow: "hidden", opacity: stamp.checked ? 1 : 0.3, backgroundColor: C.white }}>
+            {badgePreview.map((badge) => (
+              <div key={badge.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
+                <div style={{ width: "38px", height: "38px", border: badge.checked ? `2px solid ${C.royal}` : `2px dashed ${C.pale}`, borderRadius: "10px", boxShadow: badge.checked ? `2px 2px 0 ${C.royal}` : "none", overflow: "hidden", opacity: badge.checked ? 1 : 0.3, backgroundColor: C.white }}>
                   <img
-                    src={`${import.meta.env.BASE_URL}${stamp.imagePath}`}
-                    alt={`stamp-preview-${stamp.id}`}
+                    src={`${import.meta.env.BASE_URL}${badge.imagePath}`}
+                    alt={`badge-preview-${badge.id}`}
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
                 </div>
