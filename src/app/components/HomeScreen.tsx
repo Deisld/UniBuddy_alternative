@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { PhoneShell, StatusBar, ComicCard, SpeechBubble } from "./PhoneShell";
 import { BottomNav } from "./BottomNav";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
-import { askUniAIBuddy } from "../services/uniaibuddy";
+import { askUniAIBuddy, type UniAIBuddyChatMessage } from "../services/uniaibuddy";
 import { STAMP_DEFS } from "../data/stamps";
 import { classrooms } from "../data/classroomData";
 import { SYSTEM_SCHOOL_COMMENTS, type SchoolPerspective } from "../data/schoolComments";
@@ -84,20 +84,31 @@ export function HomeScreen() {
   const [draftText, setDraftText] = useState("");
   const [isCommentsExpanded, setIsCommentsExpanded] = useState(false);
   const [aiQuestion, setAiQuestion] = useState("");
-  const [aiAnswer, setAiAnswer] = useState("");
+  const [aiMessages, setAiMessages] = useState<UniAIBuddyChatMessage[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
+  const [showAiBuddy, setShowAiBuddy] = useState(false);
+  const aiInputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleAskUniAIBuddy = async () => {
     const q = aiQuestion.trim();
     if (!q || aiLoading) return;
+    const nextHistory: UniAIBuddyChatMessage[] = [...aiMessages, { role: "user", content: q }];
+    setAiMessages(nextHistory);
+    setAiQuestion("");
     setAiLoading(true);
     try {
-      const answer = await askUniAIBuddy(q, lang);
-      setAiAnswer(answer);
+      const answer = await askUniAIBuddy(q, lang, nextHistory);
+      setAiMessages((prev) => [...prev, { role: "assistant", content: answer }]);
     } finally {
       setAiLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!showAiBuddy) return;
+    const timer = window.setTimeout(() => aiInputRef.current?.focus(), 120);
+    return () => window.clearTimeout(timer);
+  }, [showAiBuddy]);
 
   useEffect(() => {
     try {
@@ -232,69 +243,41 @@ export function HomeScreen() {
         <SectionLabel color={C.purple} text="UniAIBuddy" icon={<IconSparkle size={18} />} />
 
         <ComicCard style={{ padding: "14px", backgroundColor: "#EFE8FF", marginBottom: "18px" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "10px" }}>
-            <span style={{ fontSize: "24px", lineHeight: 1 }}>🤖</span>
-            <div>
-              <p style={{ fontSize: "13px", fontWeight: 900, color: C.navy, marginBottom: "3px" }}>
-                {lang === "zh" ? "问我系统内的问题" : "Ask me system questions"}
-              </p>
-              <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.45 }}>
-                {lang === "zh"
-                  ? "基于知识库关键词检索 + DeepSeek 回答。"
-                  : "Keyword retrieval over knowledge base + DeepSeek response."}
-              </p>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+              <span style={{ fontSize: "24px", lineHeight: 1 }}>🤖</span>
+              <div>
+                <p style={{ fontSize: "13px", fontWeight: 900, color: C.navy, marginBottom: "3px" }}>
+                  {lang === "zh" ? "点击打开 UniAIBuddy 对话" : "Open UniAIBuddy chat"}
+                </p>
+                <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.45 }}>
+                  {lang === "zh"
+                    ? "弹窗中可连续对话，基于知识库检索 + DeepSeek 回答。"
+                    : "Chat in a popup with multi-turn context, knowledge retrieval + DeepSeek."}
+                </p>
+              </div>
             </div>
-          </div>
-
-          <textarea
-            value={aiQuestion}
-            onChange={(e) => setAiQuestion(e.target.value)}
-            rows={3}
-            placeholder={lang === "zh" ? "例如：怎么开启实时定位？" : "e.g. How to start live location?"}
-            style={{
-              width: "100%",
-              backgroundColor: C.white,
-              border: `2.5px solid ${C.navy}`,
-              borderRadius: "12px",
-              padding: "10px",
-              fontSize: "13px",
-              fontWeight: 600,
-              color: C.navy,
-              outline: "none",
-              resize: "none",
-              boxSizing: "border-box",
-            }}
-          />
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "10px" }}>
             <button
               type="button"
-              onClick={handleAskUniAIBuddy}
-              disabled={!aiQuestion.trim() || aiLoading}
+              onClick={() => setShowAiBuddy(true)}
               style={{
                 height: "36px",
-                minWidth: "88px",
-                padding: "0 14px",
+                minWidth: "84px",
+                padding: "0 12px",
                 borderRadius: "12px",
-                cursor: !aiQuestion.trim() || aiLoading ? "not-allowed" : "pointer",
-                backgroundColor: !aiQuestion.trim() || aiLoading ? "#B7C7E9" : C.royal,
+                cursor: "pointer",
+                backgroundColor: C.royal,
                 border: `2px solid ${C.navy}`,
-                boxShadow: !aiQuestion.trim() || aiLoading ? "none" : `2px 2px 0 ${C.navy}`,
+                boxShadow: `2px 2px 0 ${C.navy}`,
                 color: C.white,
                 fontSize: "12px",
                 fontWeight: 900,
+                flexShrink: 0,
               }}
             >
-              {aiLoading ? (lang === "zh" ? "回答中..." : "Thinking...") : (lang === "zh" ? "提问" : "Ask")}
+              {lang === "zh" ? "打开" : "Open"}
             </button>
           </div>
-          {aiAnswer && (
-            <div style={{ marginTop: "10px", backgroundColor: C.white, border: `2px solid ${C.navy}`, borderRadius: "12px", padding: "10px", boxShadow: `2px 2px 0 ${C.pale}` }}>
-              <p style={{ fontSize: "12px", fontWeight: 900, color: C.navy, marginBottom: "5px" }}>UniAIBuddy</p>
-              <p style={{ fontSize: "12px", fontWeight: 600, color: "#355087", lineHeight: 1.55, whiteSpace: "pre-wrap" }}>
-                {aiAnswer}
-              </p>
-            </div>
-          )}
         </ComicCard>
 
         <SectionLabel color={C.yellow} text={t("home_nav")} icon={<IconSparkle size={18} />} />
@@ -811,6 +794,114 @@ export function HomeScreen() {
               </div>
             </>
           )}
+        </div>
+      )}
+
+      {showAiBuddy && (
+        <div style={{ position: "absolute", inset: 0, zIndex: 60, backgroundColor: "rgba(14, 27, 77, 0.45)", display: "flex", alignItems: "center", justifyContent: "center", padding: "14px" }}>
+          <div style={{ width: "100%", height: "min(78vh, 620px)", maxWidth: "420px", backgroundColor: C.white, border: `2.5px solid ${C.navy}`, borderRadius: "16px", boxShadow: `5px 5px 0 ${C.navy}`, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            <div style={{ backgroundColor: C.purple, borderBottom: `2px solid ${C.navy}`, padding: "10px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px" }}>
+              <div>
+                <p style={{ fontSize: "14px", fontWeight: 900, color: C.white }}>🤖 UniAIBuddy</p>
+                <p style={{ fontSize: "10px", fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>
+                  {lang === "zh" ? "你好，我是 UniAIBuddy" : "Hi, I am UniAIBuddy"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAiBuddy(false)}
+                style={{ width: "32px", height: "32px", borderRadius: "10px", border: `2px solid rgba(255,255,255,0.5)`, backgroundColor: "rgba(255,255,255,0.18)", color: C.white, fontSize: "16px", fontWeight: 900, cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#F7FAFF", padding: "10px", display: "flex", flexDirection: "column", gap: "8px" }}>
+              {aiMessages.length === 0 && (
+                <div style={{ backgroundColor: C.white, border: `1.5px solid ${C.pale}`, borderRadius: "10px", padding: "8px 10px" }}>
+                  <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.5 }}>
+                    {lang === "zh" ? "你可以问我：怎么开始定位？怎么用盲盒路线？" : "Try asking: how to start live location? how to use mystery route?"}
+                  </p>
+                </div>
+              )}
+              {aiMessages.map((msg, idx) => (
+                <div
+                  key={`${msg.role}-${idx}`}
+                  style={{
+                    alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+                    maxWidth: "90%",
+                    backgroundColor: msg.role === "user" ? C.ice : C.white,
+                    border: `1.5px solid ${C.pale}`,
+                    borderRadius: "10px",
+                    padding: "8px 10px",
+                  }}
+                >
+                  <p style={{ fontSize: "10px", fontWeight: 900, color: "#4B6898", marginBottom: "4px" }}>
+                    {msg.role === "user" ? (lang === "zh" ? "你" : "You") : "UniAIBuddy"}
+                  </p>
+                  <p style={{ fontSize: "12px", fontWeight: 600, color: "#355087", lineHeight: 1.55, whiteSpace: "pre-wrap" }}>
+                    {msg.content}
+                  </p>
+                </div>
+              ))}
+              {aiLoading && (
+                <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898" }}>
+                  {lang === "zh" ? "UniAIBuddy 正在思考..." : "UniAIBuddy is thinking..."}
+                </p>
+              )}
+            </div>
+
+            <div style={{ borderTop: `2px solid ${C.pale}`, padding: "10px", backgroundColor: C.white }}>
+              <textarea
+                ref={aiInputRef}
+                value={aiQuestion}
+                onChange={(e) => setAiQuestion(e.target.value)}
+                rows={2}
+                placeholder={lang === "zh" ? "输入问题，Ctrl/Cmd + Enter 发送" : "Type your question, Ctrl/Cmd + Enter to send"}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    void handleAskUniAIBuddy();
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  backgroundColor: C.white,
+                  border: `2px solid ${C.navy}`,
+                  borderRadius: "10px",
+                  padding: "8px 10px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: C.navy,
+                  outline: "none",
+                  resize: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={handleAskUniAIBuddy}
+                  disabled={!aiQuestion.trim() || aiLoading}
+                  style={{
+                    height: "34px",
+                    minWidth: "84px",
+                    padding: "0 12px",
+                    borderRadius: "10px",
+                    cursor: !aiQuestion.trim() || aiLoading ? "not-allowed" : "pointer",
+                    backgroundColor: !aiQuestion.trim() || aiLoading ? "#B7C7E9" : C.royal,
+                    border: `2px solid ${C.navy}`,
+                    boxShadow: !aiQuestion.trim() || aiLoading ? "none" : `2px 2px 0 ${C.navy}`,
+                    color: C.white,
+                    fontSize: "12px",
+                    fontWeight: 900,
+                  }}
+                >
+                  {aiLoading ? (lang === "zh" ? "回答中..." : "Thinking...") : (lang === "zh" ? "发送" : "Send")}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </PhoneShell>
