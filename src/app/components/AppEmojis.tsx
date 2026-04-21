@@ -601,8 +601,8 @@ export function ECheckCircle({ size = 32, color = "#5EEAA8", src }: EmojiProps) 
   );
 }
 
-/* ── Stamp/Seal (for stamp collection) ── */
-export function EStamp({ size = 32, color = "#2350D8", src }: EmojiProps) {
+/* ── Badge/Seal (for badge collection) ── */
+export function EBadge({ size = 32, color = "#2350D8", src }: EmojiProps) {
   return (
     <SvgOrImg src={src} size={size}>
       <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
@@ -613,6 +613,9 @@ export function EStamp({ size = 32, color = "#2350D8", src }: EmojiProps) {
     </SvgOrImg>
   );
 }
+
+// Backward-compatible alias
+export const EStamp = EBadge;
 
 /* ── Generic EmojiDisplay – maps emoji string → SVG component ──────────────
    Uses emojiImageOverrides first, then falls back to SVG.
