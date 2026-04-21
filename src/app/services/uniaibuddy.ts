@@ -21,6 +21,12 @@ const STOPWORDS = new Set([
   "what", "how", "is", "are", "the", "a", "an", "to", "in", "on", "for", "of", "do", "does", "can",
 ]);
 
+const SYSTEM_QUESTION_HINTS = [
+  "系统", "导航", "地图", "路线", "盲盒", "自定义", "推荐路线", "教室", "搜索", "定位", "实时定位",
+  "校园", "收藏", "个人中心", "profile", "pictures", "route", "mystery", "custom", "locate",
+  "location", "map", "navigation", "classroom", "favorite", "favourite", "feature", "function",
+];
+
 function isIdentityQuestion(question: string): boolean {
   const q = question.toLowerCase();
   return (
@@ -36,6 +42,44 @@ function identityReply(lang: Lang): string {
   return lang === "zh"
     ? "我是 UniAIBuddy，你的 UniBuddy 校园导航助手。我会基于已收录知识为你解答路线、地图、教室搜索和定位相关问题。"
     : "I am UniAIBuddy, your UniBuddy campus navigation assistant. I answer route, map, classroom search, and live-location questions based on the recorded knowledge base.";
+}
+
+function isSimpleGreeting(question: string): boolean {
+  const q = question.trim().toLowerCase();
+  if (!q) return false;
+  return [
+    "你好",
+    "嗨",
+    "哈喽",
+    "早上好",
+    "中午好",
+    "下午好",
+    "晚上好",
+    "hello",
+    "hi",
+    "hey",
+    "good morning",
+    "good afternoon",
+    "good evening",
+  ].some((token) => q === token || q.startsWith(`${token} `));
+}
+
+function simpleGreetingReply(lang: Lang): string {
+  return lang === "zh"
+    ? "你好呀！我是 UniAIBuddy。你可以问我校园导航系统相关的问题，比如“怎么开始定位”或“盲盒路线怎么用”。"
+    : "Hi! I am UniAIBuddy. You can ask me questions about the campus navigation system, such as how to start live location or use mystery routes.";
+}
+
+function looksLikeSystemQuestion(question: string): boolean {
+  const q = question.toLowerCase();
+  if (!q.trim()) return false;
+  return SYSTEM_QUESTION_HINTS.some((hint) => q.includes(hint.toLowerCase()));
+}
+
+function nonSystemReply(lang: Lang): string {
+  return lang === "zh"
+    ? "这个问题更像是日常聊天。我主要负责 UniBuddy 导航系统相关问题；如果你想了解功能用法，可以直接问我地图、路线、教室搜索或定位。"
+    : "This looks like general chat. I mainly handle UniBuddy navigation-system questions. Ask me about map, routes, classroom search, or live location.";
 }
 
 function tokenize(input: string): string[] {
@@ -173,6 +217,7 @@ export async function askUniAIBuddy(
 ): Promise<string> {
   const q = question.trim();
   if (!q) return lang === "zh" ? UNI_AI_FALLBACK_ZH : UNI_AI_FALLBACK_EN;
+  if (isSimpleGreeting(q)) return simpleGreetingReply(lang);
   if (isIdentityQuestion(q)) return identityReply(lang);
 
   const lastUserTurns = history
@@ -182,6 +227,7 @@ export async function askUniAIBuddy(
     .join(" ");
 
   const retrievalQuery = [lastUserTurns, q].filter(Boolean).join(" ");
+  if (!looksLikeSystemQuestion(retrievalQuery)) return nonSystemReply(lang);
   const hits = searchKnowledge(retrievalQuery, 3);
 
   if (hits.length === 0) {
