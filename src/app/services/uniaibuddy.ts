@@ -67,7 +67,7 @@ function isSimpleGreeting(question: string): boolean {
 function simpleGreetingReply(lang: Lang): string {
   return lang === "zh"
     ? "你好呀！我是 UniAIBuddy。你可以问我校园导航系统相关的问题，比如“我从哪里进入地图功能？”或“导览路线在地图上怎么显示？”。"
-    : "Hi! I am UniAIBuddy. You can ask me questions about the campus navigation system, such as Where do I enter the map function?";
+    : "Hi! I am UniAIBuddy. You can ask me questions about the campus navigation system, such as How to start live location?";
 }
 
 function looksLikeSystemQuestion(question: string): boolean {
