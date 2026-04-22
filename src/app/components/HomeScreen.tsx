@@ -17,18 +17,18 @@ import {
   IconBell, IconHeart, IconBadge, IconSparkle,
   IconChevronRight, IconPin, IconTrash, IconBack,
 } from "./ComicIcons";
+import {
+  ONBOARDING_AI_STEP,
+  ONBOARDING_EVENT_NAME,
+  getOnboardingStep,
+  setOnboardingStep,
+} from "../onboardingState";
 
 const C = {
   navy: "#0E1B4D", royal: "#2350D8", sky: "#4B9EF7", pale: "#A8D4FF",
   ice: "#DCF0FF", cream: "#FFFBF0", yellow: "#FFD93D", coral: "#FF6B6B",
   mint: "#5EEAA8", purple: "#7B5CF5", white: "#FFFFFF",
 };
-const ONBOARDING_STEP_STORAGE_KEY = "unibuddy_onboarding_step_v1";
-const LEGACY_NAV_GUIDE_STORAGE_KEY = "unibuddy_nav_guide_seen_v1";
-const LEGACY_AI_GUIDE_STORAGE_KEY = "unibuddy_ai_guide_seen_v1";
-const AI_GUIDE_STEP = 5;
-const ONBOARDING_DONE_VALUE = "done";
-const ONBOARDING_EVENT_NAME = "unibuddy-onboarding-step-change";
 const BASE_URL = ((import.meta as any).env?.BASE_URL ?? "/") as string;
 
 const navCardDefs = [
@@ -128,27 +128,7 @@ export function HomeScreen() {
 
   useEffect(() => {
     const syncAiGuide = () => {
-      try {
-        const legacyNavSeen = window.localStorage.getItem(LEGACY_NAV_GUIDE_STORAGE_KEY) === "1";
-        const legacyAiSeen = window.localStorage.getItem(LEGACY_AI_GUIDE_STORAGE_KEY) === "1";
-        const savedStep = window.localStorage.getItem(ONBOARDING_STEP_STORAGE_KEY);
-
-        if (!savedStep) {
-          if (legacyNavSeen && legacyAiSeen) {
-            window.localStorage.setItem(ONBOARDING_STEP_STORAGE_KEY, ONBOARDING_DONE_VALUE);
-          } else if (legacyNavSeen) {
-            window.localStorage.setItem(ONBOARDING_STEP_STORAGE_KEY, String(AI_GUIDE_STEP));
-          } else {
-            window.localStorage.setItem(ONBOARDING_STEP_STORAGE_KEY, "1");
-          }
-        }
-
-        setShowAiGuide(
-          window.localStorage.getItem(ONBOARDING_STEP_STORAGE_KEY) === String(AI_GUIDE_STEP),
-        );
-      } catch {
-        setShowAiGuide(false);
-      }
+      setShowAiGuide(getOnboardingStep() === ONBOARDING_AI_STEP);
     };
 
     syncAiGuide();
@@ -187,12 +167,7 @@ export function HomeScreen() {
   const closeAiGuide = () => {
     setShowAiGuide(false);
     setAiGuideRect(null);
-    try {
-      window.localStorage.setItem(ONBOARDING_STEP_STORAGE_KEY, ONBOARDING_DONE_VALUE);
-      window.dispatchEvent(new Event(ONBOARDING_EVENT_NAME));
-    } catch {
-      // ignore storage failure
-    }
+    setOnboardingStep("done");
   };
   const aiGuideBubbleStyle = useMemo(() => {
     if (!aiGuideRect || typeof window === "undefined") return null;
@@ -1127,7 +1102,7 @@ export function HomeScreen() {
             }}
           >
             <p style={{ fontSize: "12px", fontWeight: 900, color: C.royal, marginBottom: "6px" }}>
-              {t("nav_guide_step", { current: AI_GUIDE_STEP, total: AI_GUIDE_STEP })}
+              {t("nav_guide_step", { current: ONBOARDING_AI_STEP, total: ONBOARDING_AI_STEP })}
             </p>
             <p style={{ fontSize: "14px", fontWeight: 900, color: C.navy, marginBottom: "4px" }}>
               {t("home_ai_guide_title")}
