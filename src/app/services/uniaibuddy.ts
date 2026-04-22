@@ -142,6 +142,28 @@ function parseKnowledgeEntries(markdown: string): KnowledgeEntry[] {
 
 const KNOWLEDGE_ENTRIES = parseKnowledgeEntries(knowledgeMarkdownRaw);
 
+function hasCjk(input: string): boolean {
+  return /[\u4e00-\u9fff]/.test(input);
+}
+
+export function getUniAIBuddyPresetQuestions(lang: Lang, limit = 4): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const entry of KNOWLEDGE_ENTRIES) {
+    const isZhQuestion = hasCjk(entry.question);
+    if (lang === "zh" && !isZhQuestion) continue;
+    if (lang === "en" && isZhQuestion) continue;
+    if (seen.has(entry.question)) continue;
+
+    seen.add(entry.question);
+    result.push(entry.question);
+    if (result.length >= limit) break;
+  }
+
+  return result;
+}
+
 function scoreEntry(query: string, entry: KnowledgeEntry): number {
   const normalizedQuery = normalizeForMatch(query);
   if (normalizedQuery && entry.normalizedQuestion) {
