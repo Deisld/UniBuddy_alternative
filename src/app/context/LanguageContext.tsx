@@ -581,7 +581,7 @@ const LangContext = createContext<LangContextValue>({
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>("zh");
+  const [lang, setLang] = useState<Lang>("en");
   const toggle = () => setLang((l) => (l === "zh" ? "en" : "zh"));
   const t = (key: string, vars?: Record<string, string | number>) => {
     const map = lang === "zh" ? zh : en;
