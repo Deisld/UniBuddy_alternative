@@ -1,4 +1,4 @@
-import { type ReactNode, useRef, useState, useEffect } from "react";
+import React, { type ReactNode, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
@@ -28,6 +28,7 @@ export function PhoneShell({
       }}
     >
       <div
+        data-phone-shell="true"
         className="relative flex h-full min-h-0 w-full max-w-[560px] flex-1 flex-col overflow-hidden"
         style={{
           width: "100%",
