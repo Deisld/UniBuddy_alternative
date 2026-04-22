@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createHashRouter } from "react-router";
 import { RootLayout, ErrorPage } from "./components/RootLayout";
 import { SplashScreen } from "./components/SplashScreen";
 import HomeScreen from "./components/HomeScreen";
@@ -8,7 +8,7 @@ import { MysteryRouteScreen } from "./components/MysteryRouteScreen";
 import { CustomRouteScreen } from "./components/CustomRouteScreen";
 import { ProfileScreen } from "./components/ProfileScreen";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/",
     Component: RootLayout,
