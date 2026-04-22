@@ -1,11 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { PhoneShell, StatusBar, ComicCard, SpeechBubble } from "./PhoneShell";
 import { BottomNav } from "./BottomNav";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
-import { askUniAIBuddy, type UniAIBuddyChatMessage } from "../services/uniaibuddy";
+import {
+  askUniAIBuddy,
+  getUniAIBuddyPresetQuestions,
+  type UniAIBuddyChatMessage,
+} from "../services/uniaibuddy";
 import { BADGE_DEFS } from "../data/stamps";
 import { classrooms } from "../data/classroomData";
 import { SYSTEM_SCHOOL_COMMENTS, type SchoolPerspective } from "../data/schoolComments";
@@ -89,9 +93,10 @@ export function HomeScreen() {
   const [aiLoading, setAiLoading] = useState(false);
   const [showAiBuddy, setShowAiBuddy] = useState(false);
   const aiInputRef = useRef<HTMLTextAreaElement>(null);
+  const aiPresetQuestions = useMemo(() => getUniAIBuddyPresetQuestions(lang, 4), [lang]);
 
-  const handleAskUniAIBuddy = async () => {
-    const q = aiQuestion.trim();
+  const handleAskUniAIBuddy = async (presetQuestion?: string) => {
+    const q = (presetQuestion ?? aiQuestion).trim();
     if (!q || aiLoading) return;
     const nextHistory: UniAIBuddyChatMessage[] = [...aiMessages, { role: "user", content: q }];
     setAiMessages(nextHistory);
@@ -871,6 +876,31 @@ export function HomeScreen() {
                   <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.5 }}>
                     {lang === "zh" ? "你可以问我：怎么开始定位？怎么用盲盒路线？" : "Try asking: how to start live location? how to use mystery route?"}
                   </p>
+                  {aiPresetQuestions.length > 0 && (
+                    <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      {aiPresetQuestions.map((question) => (
+                        <button
+                          key={question}
+                          type="button"
+                          disabled={aiLoading}
+                          onClick={() => void handleAskUniAIBuddy(question)}
+                          style={{
+                            border: `1.5px solid ${C.sky}`,
+                            borderRadius: "999px",
+                            padding: "4px 9px",
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            color: aiLoading ? "#6E7FA8" : C.royal,
+                            backgroundColor: aiLoading ? "#E7EEF9" : "#EEF5FF",
+                            cursor: aiLoading ? "not-allowed" : "pointer",
+                            lineHeight: 1.35,
+                          }}
+                        >
+                          {question}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
               {aiMessages.map((msg, idx) => (
@@ -930,7 +960,7 @@ export function HomeScreen() {
               <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}>
                 <button
                   type="button"
-                  onClick={handleAskUniAIBuddy}
+                  onClick={() => void handleAskUniAIBuddy()}
                   disabled={!aiQuestion.trim() || aiLoading}
                   style={{
                     height: "34px",
