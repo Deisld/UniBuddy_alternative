@@ -264,7 +264,10 @@ export function HomeScreen() {
 
         <SectionLabel color={C.purple} text="UniAIBuddy" icon={<IconSparkle size={18} />} />
 
-        <ComicCard style={{ padding: "14px", backgroundColor: "#EFE8FF", marginBottom: "18px" }}>
+        <ComicCard
+          data-guide-target="uniaibuddy-card"
+          style={{ padding: "14px", backgroundColor: "#EFE8FF", marginBottom: "18px" }}
+        >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px" }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
               <span style={{ fontSize: "24px", lineHeight: 1 }}>🤖</span>
