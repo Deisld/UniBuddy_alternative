@@ -167,6 +167,18 @@ export function HomeScreen() {
     setDraftText("");
   };
 
+  const handleDeleteComment = (commentId: string) => {
+    setUserComments((prev) => {
+      const next = prev.filter((c) => c.id !== commentId);
+      try {
+        localStorage.setItem(USER_COMMENTS_KEY, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
   const userCommentsForFreshman = userComments.filter((c) => c.perspective === "freshman");
   const userCommentsForVisitor = userComments.filter((c) => c.perspective === "visitor");
 
@@ -479,12 +491,37 @@ export function HomeScreen() {
                           ) : (
                             userList.map((c) => (
                               <div key={c.id} style={{ backgroundColor: "#FFF0F0", border: `1.5px solid ${C.coral}`, borderRadius: "12px", padding: "10px" }}>
-                                <p style={{ fontSize: "12px", fontWeight: 900, color: C.navy, marginBottom: "4px" }}>
-                                  {c.text}
-                                </p>
-                                <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", marginBottom: 0 }}>
-                                  {formatCommentTime(c.createdAt)}
-                                </p>
+                                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px" }}>
+                                  <div style={{ minWidth: 0, flex: 1 }}>
+                                    <p style={{ fontSize: "12px", fontWeight: 900, color: C.navy, marginBottom: "4px", wordBreak: "break-word" }}>
+                                      {c.text}
+                                    </p>
+                                    <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", marginBottom: 0 }}>
+                                      {formatCommentTime(c.createdAt)}
+                                    </p>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteComment(c.id)}
+                                    aria-label={lang === "zh" ? "删除评论" : "Delete comment"}
+                                    title={lang === "zh" ? "删除评论" : "Delete comment"}
+                                    style={{
+                                      width: "28px",
+                                      height: "28px",
+                                      flexShrink: 0,
+                                      backgroundColor: C.white,
+                                      border: `1.5px solid ${C.navy}`,
+                                      borderRadius: "8px",
+                                      boxShadow: `1.5px 1.5px 0 ${C.navy}`,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    <IconTrash size={13} />
+                                  </button>
+                                </div>
                               </div>
                             ))
                           )}
