@@ -134,9 +134,7 @@ export function HomeScreen() {
     const syncOnboardingUi = () => {
       const step = getOnboardingStep();
       setShowAiGuide(step === ONBOARDING_AI_STEP);
-      if (step !== ONBOARDING_LANG_STEP) {
-        setShowLangGuide(false);
-      }
+      setShowLangGuide(step === ONBOARDING_LANG_STEP);
     };
 
     syncOnboardingUi();
@@ -216,16 +214,16 @@ export function HomeScreen() {
     return { width, left, top, pointerX: Math.min(width - 22, Math.max(10, pointerX)) };
   }, [langGuideRect]);
 
-  const closeLangGuide = () => {
+  const finishLangGuide = () => {
     setLangGuideRect(null);
     setOnboardingStep(1);
   };
 
-  const handleLanguageToggle = () => {
-    toggle();
-    if (getOnboardingStep() === ONBOARDING_LANG_STEP) {
-      setShowLangGuide(true);
+  const handleChooseLanguage = (target: "zh" | "en") => {
+    if (lang !== target) {
+      toggle();
     }
+    finishLangGuide();
   };
 
   const closeAiGuide = () => {
@@ -362,7 +360,7 @@ export function HomeScreen() {
             <button
               ref={langToggleRef}
               type="button"
-              onClick={handleLanguageToggle}
+              onClick={toggle}
               style={{
                 display: "flex", alignItems: "center",
                 backgroundColor: C.navy, border: `2px solid ${C.pale}`,
@@ -1137,7 +1135,6 @@ export function HomeScreen() {
         <>
           <div
             style={{ position: "fixed", inset: 0, zIndex: 65, backgroundColor: "rgba(2, 6, 23, 0.42)" }}
-            onClick={closeLangGuide}
             aria-hidden
           />
           <div
@@ -1192,24 +1189,43 @@ export function HomeScreen() {
             <p style={{ fontSize: "12px", fontWeight: 800, color: C.navy, margin: "0 0 6px", lineHeight: 1.45 }}>
               {t("home_lang_onboard_body")}
             </p>
-            <button
-              type="button"
-              onClick={closeLangGuide}
-              style={{
-                width: "100%",
-                height: "46px",
-                borderRadius: "14px",
-                border: `2px solid ${C.navy}`,
-                backgroundColor: C.royal,
-                color: C.white,
-                fontSize: "13px",
-                fontWeight: 900,
-                cursor: "pointer",
-                boxShadow: `3px 4px 0 ${C.navy}`,
-              }}
-            >
-              {t("home_lang_onboard_btn")}
-            </button>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button
+                type="button"
+                onClick={() => handleChooseLanguage("zh")}
+                style={{
+                  flex: 1,
+                  height: "46px",
+                  borderRadius: "14px",
+                  border: `2px solid ${C.navy}`,
+                  backgroundColor: C.white,
+                  color: C.navy,
+                  fontSize: "13px",
+                  fontWeight: 900,
+                  cursor: "pointer",
+                }}
+              >
+                {t("home_lang_onboard_switch_zh")}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleChooseLanguage("en")}
+                style={{
+                  flex: 1,
+                  height: "46px",
+                  borderRadius: "14px",
+                  border: `2px solid ${C.navy}`,
+                  backgroundColor: C.royal,
+                  color: C.white,
+                  fontSize: "13px",
+                  fontWeight: 900,
+                  cursor: "pointer",
+                  boxShadow: `3px 4px 0 ${C.navy}`,
+                }}
+              >
+                {t("home_lang_onboard_keep_en")}
+              </button>
+            </div>
           </div>
         </>
       )}
