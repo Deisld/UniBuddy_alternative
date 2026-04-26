@@ -5,11 +5,11 @@ export type Lang = "zh" | "en";
 type Texts = Record<string, string>;
 
 const zh: Texts = {
-  // Splash
-  splash_location: "XJTLU · Suzhou",
-  splash_subtitle: "Your best XJTLU campus guide",
-  splash_cta: "开始探索/Start Exploring →",
-  splash_f1: "图片/Photos", splash_f2: "地图/Map", splash_f3: "路线/Routes", splash_f4: "集章/Badges",
+  // Splash（与 en 对应；Splash 页用 tPair 同时展示中英）
+  splash_location: "西交利物浦 · 苏州",
+  splash_subtitle: "你最贴心的西浦校园导览",
+  splash_cta: "开始探索 →",
+  splash_f1: "图片", splash_f2: "地图", splash_f3: "路线", splash_f4: "集章",
   // BottomNav
   nav_home: "主页", nav_map: "地图", nav_camera: "相机", nav_route: "路线", nav_profile: "我的",
   nav_guide_step: "第 {current}/{total} 步",
@@ -596,12 +596,15 @@ interface LangContextValue {
   lang: Lang;
   toggle: () => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
+  /** 同一 key 在 zh / en 两套文案中的字符串，用于 Splash 等双语并列展示 */
+  tPair: (key: string) => { zh: string; en: string };
 }
 
 const LangContext = createContext<LangContextValue>({
   lang: "en",
   toggle: () => {},
   t: (k) => k,
+  tPair: (k) => ({ zh: zh[k] ?? k, en: en[k] ?? k }),
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -617,7 +620,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
     return str;
   };
-  return <LangContext.Provider value={{ lang, toggle, t }}>{children}</LangContext.Provider>;
+  const tPair = (key: string) => ({ zh: zh[key] ?? key, en: en[key] ?? key });
+  return <LangContext.Provider value={{ lang, toggle, t, tPair }}>{children}</LangContext.Provider>;
 }
 
 export function useLanguage() {
