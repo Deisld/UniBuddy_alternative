@@ -10,6 +10,16 @@ export interface SavedRoute {
   bg: string;
   tagBg: string;
   tagLabel: string;
+  guidedTour?: {
+    title: string;
+    subtitle?: string;
+    points: Array<{
+      id: string;
+      label: string;
+      x?: number;
+      y?: number;
+    }>;
+  };
 }
 
 interface FavoritesCtx {
