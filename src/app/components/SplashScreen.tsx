@@ -10,7 +10,7 @@ const dotsBg: React.CSSProperties = {
 
 export function SplashScreen() {
   const navigate = useNavigate();
-  const { lang, toggle, tPair } = useLanguage();
+  const { tPair } = useLanguage();
 
   const featureChips = [
     { emoji: "📸", key: "splash_f1" },
@@ -46,45 +46,6 @@ export function SplashScreen() {
           ...dotsBg,
         }}
       >
-        {/* 语言切换（进入应用前可切换默认界面语言） */}
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={lang === "zh" ? "切换为英文" : "Switch to Chinese"}
-          style={{
-            position: "absolute",
-            top: "max(10px, env(safe-area-inset-top))",
-            right: "clamp(12px, 4vw, 18px)",
-            zIndex: 30,
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "#0E1B4D",
-            border: "2px solid #A8D4FF",
-            borderRadius: "20px",
-            overflow: "hidden",
-            boxShadow: "2px 2px 0 rgba(255,255,255,0.2)",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          {(["zh", "en"] as const).map((l) => (
-            <span
-              key={l}
-              style={{
-                padding: "4px 10px",
-                fontSize: "11px",
-                fontWeight: 900,
-                color: lang === l ? "#0E1B4D" : "rgba(255,255,255,0.5)",
-                backgroundColor: lang === l ? "#FFD93D" : "transparent",
-                transition: "background 0.2s",
-                pointerEvents: "none",
-              }}
-            >
-              {l === "zh" ? "中文" : "EN"}
-            </span>
-          ))}
-        </button>
-
         {/* ── Top coloured band ── */}
         <div
           style={{
