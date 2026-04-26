@@ -258,6 +258,11 @@ export function RouteScreen() {
                           id: routeDef.id, title, emoji: routeDef.emoji,
                           type: "recommended", duration: durationLabel,
                           stops, bg: routeDef.bg, tagBg: routeDef.tagBg, tagLabel: t("type_recommended"),
+                          guidedTour: {
+                            title,
+                            subtitle: durationLabel,
+                            points: tourPoints,
+                          },
                         })}
                         style={{
                           width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center",
