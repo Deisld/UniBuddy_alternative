@@ -537,6 +537,7 @@ export function PicturesAndMapScreen() {
   const [selected, setSelected] = useState<typeof classrooms[0] | null>(null);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [buildingActivePerspective, setBuildingActivePerspective] = useState<CommentPerspective>("freshman");
+  const [isBuildingCommentsExpanded, setIsBuildingCommentsExpanded] = useState(false);
   const [buildingDraftText, setBuildingDraftText] = useState("");
   const [buildingCommentError, setBuildingCommentError] = useState("");
   const [buildingComments, setBuildingComments] = useState<UserBuildingComment[]>([]);
@@ -812,6 +813,7 @@ export function PicturesAndMapScreen() {
   useEffect(() => {
     stopBuildingSpeech();
     setMascotGuideOpen(false);
+    setIsBuildingCommentsExpanded(false);
     setBuildingActivePerspective("freshman");
     setBuildingDraftText("");
     setBuildingCommentError("");
@@ -1446,138 +1448,166 @@ export function PicturesAndMapScreen() {
                 </div>
 
                 <div style={{ marginTop: "10px", borderTop: `1.5px solid ${C.pale}`, paddingTop: "10px" }}>
-                  <p style={{ fontSize: "12px", fontWeight: 900, color: C.navy, marginBottom: "8px" }}>
-                    {lang === "zh" ? "💬 楼宇评论" : "💬 Building Comments"}
-                  </p>
-
-                  <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", marginBottom: isBuildingCommentsExpanded ? "8px" : 0 }}>
+                    <p style={{ fontSize: "12px", fontWeight: 900, color: C.navy, margin: 0 }}>
+                      {lang === "zh" ? "💬 楼宇评论" : "💬 Building Comments"}
+                    </p>
                     <button
                       type="button"
-                      onClick={() => setBuildingActivePerspective("freshman")}
+                      onClick={() => setIsBuildingCommentsExpanded((prev) => !prev)}
                       style={{
-                        flex: 1,
-                        height: "32px",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                        backgroundColor: buildingActivePerspective === "freshman" ? C.royal : C.white,
-                        color: buildingActivePerspective === "freshman" ? C.white : "#4B6898",
-                        border: `2px solid ${C.navy}`,
-                        boxShadow: buildingActivePerspective === "freshman" ? `2px 2px 0 ${C.navy}` : `1.5px 1.5px 0 ${C.pale}`,
-                        fontSize: "11px",
-                        fontWeight: 900,
-                      }}
-                    >
-                      🌱 {lang === "zh" ? "新生" : "Freshman"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setBuildingActivePerspective("visitor")}
-                      style={{
-                        flex: 1,
-                        height: "32px",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                        backgroundColor: buildingActivePerspective === "visitor" ? C.royal : C.white,
-                        color: buildingActivePerspective === "visitor" ? C.white : "#4B6898",
-                        border: `2px solid ${C.navy}`,
-                        boxShadow: buildingActivePerspective === "visitor" ? `2px 2px 0 ${C.navy}` : `1.5px 1.5px 0 ${C.pale}`,
-                        fontSize: "11px",
-                        fontWeight: 900,
-                      }}
-                    >
-                      🌍 {lang === "zh" ? "访客" : "Visitor"}
-                    </button>
-                  </div>
-
-                  <textarea
-                    value={buildingDraftText}
-                    onChange={(e) => {
-                      setBuildingDraftText(e.target.value);
-                      if (buildingCommentError) setBuildingCommentError("");
-                    }}
-                    rows={2}
-                    placeholder={lang === "zh" ? "写下你对这栋楼的体验或建议" : "Share your tips for this building"}
-                    style={{
-                      width: "100%",
-                      border: `2px solid ${C.navy}`,
-                      borderRadius: "10px",
-                      padding: "8px 10px",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      color: C.navy,
-                      resize: "none",
-                      outline: "none",
-                      boxSizing: "border-box",
-                    }}
-                  />
-                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "7px" }}>
-                    <button
-                      type="button"
-                      onClick={handlePostBuildingComment}
-                      style={{
+                        flexShrink: 0,
+                        minWidth: "72px",
                         height: "30px",
-                        padding: "0 12px",
+                        padding: "0 10px",
                         borderRadius: "9px",
-                        cursor: "pointer",
-                        backgroundColor: C.royal,
+                        backgroundColor: C.ice,
                         border: `2px solid ${C.navy}`,
                         boxShadow: `2px 2px 0 ${C.navy}`,
-                        color: C.white,
+                        color: C.navy,
                         fontSize: "11px",
                         fontWeight: 900,
+                        cursor: "pointer",
                       }}
                     >
-                      {lang === "zh" ? "发布" : "Post"}
+                      {isBuildingCommentsExpanded
+                        ? (lang === "zh" ? "收起" : "Collapse")
+                        : (lang === "zh" ? "展开" : "Expand")}
                     </button>
                   </div>
-                  {buildingCommentError && (
-                    <p style={{ marginTop: "6px", marginBottom: "4px", fontSize: "11px", fontWeight: 800, color: C.coral }}>
-                      {buildingCommentError}
-                    </p>
-                  )}
 
-                  <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "6px", maxHeight: "180px", overflowY: "auto", paddingRight: "3px" }}>
-                    {activeBuildingComments.length === 0 ? (
-                      <div style={{ backgroundColor: C.cream, border: `1.5px dashed ${C.pale}`, borderRadius: "10px", padding: "8px" }}>
-                        <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", margin: 0 }}>
-                          {lang === "zh" ? "该视角下还没有评论，欢迎第一个留言～" : "No comments yet in this perspective."}
-                        </p>
+                  {isBuildingCommentsExpanded && (
+                    <>
+                      <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                        <button
+                          type="button"
+                          onClick={() => setBuildingActivePerspective("freshman")}
+                          style={{
+                            flex: 1,
+                            height: "32px",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            backgroundColor: buildingActivePerspective === "freshman" ? C.royal : C.white,
+                            color: buildingActivePerspective === "freshman" ? C.white : "#4B6898",
+                            border: `2px solid ${C.navy}`,
+                            boxShadow: buildingActivePerspective === "freshman" ? `2px 2px 0 ${C.navy}` : `1.5px 1.5px 0 ${C.pale}`,
+                            fontSize: "11px",
+                            fontWeight: 900,
+                          }}
+                        >
+                          🌱 {lang === "zh" ? "新生" : "Freshman"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBuildingActivePerspective("visitor")}
+                          style={{
+                            flex: 1,
+                            height: "32px",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            backgroundColor: buildingActivePerspective === "visitor" ? C.royal : C.white,
+                            color: buildingActivePerspective === "visitor" ? C.white : "#4B6898",
+                            border: `2px solid ${C.navy}`,
+                            boxShadow: buildingActivePerspective === "visitor" ? `2px 2px 0 ${C.navy}` : `1.5px 1.5px 0 ${C.pale}`,
+                            fontSize: "11px",
+                            fontWeight: 900,
+                          }}
+                        >
+                          🌍 {lang === "zh" ? "访客" : "Visitor"}
+                        </button>
                       </div>
-                    ) : (
-                      activeBuildingComments.map((c) => (
-                        <div key={c.id} style={{ backgroundColor: C.white, border: `1.5px solid ${C.pale}`, borderRadius: "10px", padding: "8px" }}>
-                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px" }}>
-                            <div style={{ minWidth: 0, flex: 1 }}>
-                              <p style={{ fontSize: "12px", fontWeight: 800, color: C.navy, marginBottom: "4px", wordBreak: "break-word" }}>
-                                {c.text}
-                              </p>
-                              <p style={{ fontSize: "10px", fontWeight: 700, color: "#4B6898", margin: 0 }}>
-                                {formatCommentTime(c.createdAt)}
-                              </p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteBuildingComment(c.id)}
-                              aria-label={lang === "zh" ? "删除评论" : "Delete comment"}
-                              style={{
-                                width: "24px",
-                                height: "24px",
-                                borderRadius: "8px",
-                                border: `1.5px solid ${C.navy}`,
-                                backgroundColor: C.white,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <IconTrash size={12} />
-                            </button>
+
+                      <textarea
+                        value={buildingDraftText}
+                        onChange={(e) => {
+                          setBuildingDraftText(e.target.value);
+                          if (buildingCommentError) setBuildingCommentError("");
+                        }}
+                        rows={2}
+                        placeholder={lang === "zh" ? "写下你对这栋楼的体验或建议" : "Share your tips for this building"}
+                        style={{
+                          width: "100%",
+                          border: `2px solid ${C.navy}`,
+                          borderRadius: "10px",
+                          padding: "8px 10px",
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: C.navy,
+                          resize: "none",
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "7px" }}>
+                        <button
+                          type="button"
+                          onClick={handlePostBuildingComment}
+                          style={{
+                            height: "30px",
+                            padding: "0 12px",
+                            borderRadius: "9px",
+                            cursor: "pointer",
+                            backgroundColor: C.royal,
+                            border: `2px solid ${C.navy}`,
+                            boxShadow: `2px 2px 0 ${C.navy}`,
+                            color: C.white,
+                            fontSize: "11px",
+                            fontWeight: 900,
+                          }}
+                        >
+                          {lang === "zh" ? "发布" : "Post"}
+                        </button>
+                      </div>
+                      {buildingCommentError && (
+                        <p style={{ marginTop: "6px", marginBottom: "4px", fontSize: "11px", fontWeight: 800, color: C.coral }}>
+                          {buildingCommentError}
+                        </p>
+                      )}
+
+                      <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "6px", maxHeight: "180px", overflowY: "auto", paddingRight: "3px" }}>
+                        {activeBuildingComments.length === 0 ? (
+                          <div style={{ backgroundColor: C.cream, border: `1.5px dashed ${C.pale}`, borderRadius: "10px", padding: "8px" }}>
+                            <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", margin: 0 }}>
+                              {lang === "zh" ? "该视角下还没有评论，欢迎第一个留言～" : "No comments yet in this perspective."}
+                            </p>
                           </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                        ) : (
+                          activeBuildingComments.map((c) => (
+                            <div key={c.id} style={{ backgroundColor: C.white, border: `1.5px solid ${C.pale}`, borderRadius: "10px", padding: "8px" }}>
+                              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px" }}>
+                                <div style={{ minWidth: 0, flex: 1 }}>
+                                  <p style={{ fontSize: "12px", fontWeight: 800, color: C.navy, marginBottom: "4px", wordBreak: "break-word" }}>
+                                    {c.text}
+                                  </p>
+                                  <p style={{ fontSize: "10px", fontWeight: 700, color: "#4B6898", margin: 0 }}>
+                                    {formatCommentTime(c.createdAt)}
+                                  </p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteBuildingComment(c.id)}
+                                  aria-label={lang === "zh" ? "删除评论" : "Delete comment"}
+                                  style={{
+                                    width: "24px",
+                                    height: "24px",
+                                    borderRadius: "8px",
+                                    border: `1.5px solid ${C.navy}`,
+                                    backgroundColor: C.white,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <IconTrash size={12} />
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
