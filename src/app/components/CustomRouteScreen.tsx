@@ -421,6 +421,15 @@ export function CustomRouteScreen() {
                   emoji: "🧩", type: "custom",
                   stops: route.map((b) => buildingDisplayLabel(b, t)),
                   bg: C.pale, tagBg: C.sky, tagLabel: t("type_custom"),
+                  guidedTour: {
+                    title: t("custom_my_route"),
+                    points: route.map((b) => ({
+                      id: b.id,
+                      label: buildingDisplayLabel(b, t),
+                      x: b.mapX,
+                      y: b.mapY,
+                    })),
+                  },
                 })}
                 style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: fav ? "#FFF0F0" : C.white, border: `2.5px solid ${C.navy}`, borderRadius: "14px", boxShadow: `4px 4px 0 ${C.navy}`, cursor: "pointer" }}
                 onMouseDown={(e) => (e.currentTarget.style.transform = "translate(2px,2px)")}
