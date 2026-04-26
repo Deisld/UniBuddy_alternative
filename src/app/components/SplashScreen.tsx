@@ -10,7 +10,7 @@ const dotsBg: React.CSSProperties = {
 
 export function SplashScreen() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { lang, toggle, tPair } = useLanguage();
 
   const featureChips = [
     { emoji: "📸", key: "splash_f1" },
@@ -46,6 +46,45 @@ export function SplashScreen() {
           ...dotsBg,
         }}
       >
+        {/* 语言切换（进入应用前可切换默认界面语言） */}
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={lang === "zh" ? "切换为英文" : "Switch to Chinese"}
+          style={{
+            position: "absolute",
+            top: "max(10px, env(safe-area-inset-top))",
+            right: "clamp(12px, 4vw, 18px)",
+            zIndex: 30,
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: "#0E1B4D",
+            border: "2px solid #A8D4FF",
+            borderRadius: "20px",
+            overflow: "hidden",
+            boxShadow: "2px 2px 0 rgba(255,255,255,0.2)",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          {(["zh", "en"] as const).map((l) => (
+            <span
+              key={l}
+              style={{
+                padding: "4px 10px",
+                fontSize: "11px",
+                fontWeight: 900,
+                color: lang === l ? "#0E1B4D" : "rgba(255,255,255,0.5)",
+                backgroundColor: lang === l ? "#FFD93D" : "transparent",
+                transition: "background 0.2s",
+                pointerEvents: "none",
+              }}
+            >
+              {l === "zh" ? "中文" : "EN"}
+            </span>
+          ))}
+        </button>
+
         {/* ── Top coloured band ── */}
         <div
           style={{
@@ -130,8 +169,15 @@ export function SplashScreen() {
               alignSelf: "flex-start",
             }}
           >
-            <span style={{ fontSize: "14px" }}>📍</span>
-            <span className="font-[Playpen_Sans]" style={{ fontSize: "12px", fontWeight: 800, color: "#0E1B4D" }}>{t("splash_location")}</span>
+            <span style={{ fontSize: "14px", lineHeight: 1 }}>📍</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1px", minWidth: 0 }}>
+              <span className="font-[Playpen_Sans]" style={{ fontSize: "12px", fontWeight: 800, color: "#0E1B4D", lineHeight: 1.2 }}>
+                {tPair("splash_location").zh}
+              </span>
+              <span className="font-[Playpen_Sans]" style={{ fontSize: "10px", fontWeight: 700, color: "#0E1B4D", opacity: 0.78, lineHeight: 1.2 }}>
+                {tPair("splash_location").en}
+              </span>
+            </div>
           </div>
 
           {/* Title */}
@@ -150,18 +196,20 @@ export function SplashScreen() {
               UniBuddy
             </span>
           </div>
-          <p
+          <div
             style={{
-              fontSize: "14px",
-              fontWeight: 700,
-              color: "#0E1B4D",
               marginBottom: "28px",
               borderLeft: "3px solid #FFD93D",
               paddingLeft: "10px",
             }}
           >
-            {t("splash_subtitle")} 🗺️
-          </p>
+            <p style={{ fontSize: "14px", fontWeight: 800, color: "#0E1B4D", margin: 0, lineHeight: 1.35 }}>
+              {tPair("splash_subtitle").zh}
+            </p>
+            <p style={{ fontSize: "12px", fontWeight: 700, color: "#0E1B4D", margin: "6px 0 0", opacity: 0.88, lineHeight: 1.35 }}>
+              {tPair("splash_subtitle").en} 🗺️
+            </p>
+          </div>
 
           {/* CTA button */}
           <button
@@ -184,7 +232,10 @@ export function SplashScreen() {
             onMouseDown={(e) => (e.currentTarget.style.transform = "translate(2px,2px)")}
             onMouseUp={(e) => (e.currentTarget.style.transform = "translate(0,0)")}
           >
-            {t("splash_cta")}
+            <span style={{ display: "block", fontSize: "16px", lineHeight: 1.2 }}>{tPair("splash_cta").zh}</span>
+            <span style={{ display: "block", fontSize: "12px", fontWeight: 800, opacity: 0.92, marginTop: "2px", lineHeight: 1.2 }}>
+              {tPair("splash_cta").en}
+            </span>
           </button>
 
           {/* Feature chips */}
@@ -203,7 +254,8 @@ export function SplashScreen() {
                   boxShadow: "2px 2px 0px #0E1B4D",
                 }}
               >
-                {f.emoji} {t(f.key)}
+                {f.emoji} {tPair(f.key).zh}
+                <span style={{ opacity: 0.75, fontWeight: 600 }}> · {tPair(f.key).en}</span>
               </div>
             ))}
           </div>
