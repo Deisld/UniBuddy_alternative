@@ -134,7 +134,9 @@ export function HomeScreen() {
     const syncOnboardingUi = () => {
       const step = getOnboardingStep();
       setShowAiGuide(step === ONBOARDING_AI_STEP);
-      setShowLangGuide(step === ONBOARDING_LANG_STEP);
+      if (step !== ONBOARDING_LANG_STEP) {
+        setShowLangGuide(false);
+      }
     };
 
     syncOnboardingUi();
@@ -217,6 +219,13 @@ export function HomeScreen() {
   const closeLangGuide = () => {
     setLangGuideRect(null);
     setOnboardingStep(1);
+  };
+
+  const handleLanguageToggle = () => {
+    toggle();
+    if (getOnboardingStep() === ONBOARDING_LANG_STEP) {
+      setShowLangGuide(true);
+    }
   };
 
   const closeAiGuide = () => {
@@ -353,7 +362,7 @@ export function HomeScreen() {
             <button
               ref={langToggleRef}
               type="button"
-              onClick={toggle}
+              onClick={handleLanguageToggle}
               style={{
                 display: "flex", alignItems: "center",
                 backgroundColor: C.navy, border: `2px solid ${C.pale}`,
@@ -1181,10 +1190,7 @@ export function HomeScreen() {
               </p>
             </div>
             <p style={{ fontSize: "12px", fontWeight: 800, color: C.navy, margin: "0 0 6px", lineHeight: 1.45 }}>
-              {t("home_lang_onboard_body_zh")}
-            </p>
-            <p style={{ fontSize: "12px", fontWeight: 700, color: "#355087", margin: "0 0 14px", lineHeight: 1.45 }}>
-              {t("home_lang_onboard_body_en")}
+              {t("home_lang_onboard_body")}
             </p>
             <button
               type="button"
