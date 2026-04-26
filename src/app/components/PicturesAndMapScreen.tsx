@@ -7,7 +7,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { PhoneShell, StatusBar, ComicCard, Burst } from "./PhoneShell";
 import { BottomNav } from "./BottomNav";
-import { IconBack, IconChevronLeft, IconChevronRight, IconNavigation, IconChevronRight as IconArrow } from "./ComicIcons";
+import { IconBack, IconChevronLeft, IconChevronRight, IconNavigation, IconChevronRight as IconArrow, IconTrash } from "./ComicIcons";
 import { useLanguage } from "../context/LanguageContext";
 import { classrooms } from "../data/classroomData";
 import { campusMapHotspots, type CampusMapHotspotId } from "../data/campusMapHotspots";
@@ -15,6 +15,7 @@ import { campusWalkAdjacency, shortestCampusWalkPath } from "../data/campusWalkG
 import { ImageZoomLightbox } from "./ImageZoomLightbox";
 
 const MASCOT_VOICE_STORAGE_KEY = "unibuddy.mascot.voiceUri";
+const BUILDING_COMMENTS_KEY = "unibuddy_building_comments_map_v1";
 
 const C = {
   navy: "#0E1B4D", royal: "#2350D8", sky: "#4B9EF7", pale: "#A8D4FF",
@@ -92,6 +93,15 @@ type MapTabKey = "map" | "live";
 type CampusConvenienceItem = { titleKey: string; icon: string; locationsKey: string; hotspotIds: CampusMapHotspotId[] };
 type GuidedTourPoint = { id: string; label: string; x?: number; y?: number };
 type GuidedTourPayload = { title: string; subtitle?: string; points: GuidedTourPoint[] };
+type CommentPerspective = "freshman" | "visitor";
+type UserBuildingComment = {
+  id: string;
+  buildingId: string;
+  perspective: CommentPerspective;
+  text: string;
+  textLang: "zh" | "en";
+  createdAt: number;
+};
 
 function isGuidedTourPayload(value: unknown): value is GuidedTourPayload {
   if (!value || typeof value !== "object") return false;
@@ -526,6 +536,10 @@ export function PicturesAndMapScreen() {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<typeof classrooms[0] | null>(null);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
+  const [buildingActivePerspective, setBuildingActivePerspective] = useState<CommentPerspective>("freshman");
+  const [buildingDraftText, setBuildingDraftText] = useState("");
+  const [buildingCommentError, setBuildingCommentError] = useState("");
+  const [buildingComments, setBuildingComments] = useState<UserBuildingComment[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const leafletHostRef = useRef<HTMLDivElement | null>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
@@ -620,9 +634,87 @@ export function PicturesAndMapScreen() {
           liveTip: "Map data is provided by OpenStreetMap. Browser permission and HTTPS are recommended.",
         };
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(BUILDING_COMMENTS_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+      const safe = parsed
+        .filter(
+          (c: any) =>
+            c &&
+            typeof c.id === "string" &&
+            typeof c.buildingId === "string" &&
+            (c.perspective === "freshman" || c.perspective === "visitor") &&
+            typeof c.text === "string",
+        )
+        .map((c: any) => ({
+          id: c.id as string,
+          buildingId: c.buildingId as string,
+          perspective: c.perspective as CommentPerspective,
+          text: c.text as string,
+          textLang: (c.textLang === "en" ? "en" : "zh") as "zh" | "en",
+          createdAt: typeof c.createdAt === "number" ? c.createdAt : Date.now(),
+        })) as UserBuildingComment[];
+      setBuildingComments(safe);
+    } catch {
+      // ignore storage errors
+    }
+  }, []);
+
   const activeLocation =
     (lang === "zh" ? campusLocationInfoZh : campusLocationInfo)[activeHotspotId] ??
     campusLocationInfo[activeHotspotId];
+  const formatCommentTime = (ts: number) => {
+    try {
+      const d = new Date(ts);
+      return lang === "zh" ? d.toLocaleString("zh-CN") : d.toLocaleString("en-US");
+    } catch {
+      return "";
+    }
+  };
+  const handlePostBuildingComment = () => {
+    const text = buildingDraftText.trim();
+    if (!text) {
+      setBuildingCommentError(lang === "zh" ? "评论内容不能为空" : "Comment cannot be empty.");
+      return;
+    }
+    const nextItem: UserBuildingComment = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      buildingId: activeHotspotId,
+      perspective: buildingActivePerspective,
+      text,
+      textLang: lang,
+      createdAt: Date.now(),
+    };
+    setBuildingComments((prev) => {
+      const next = [nextItem, ...prev];
+      try {
+        localStorage.setItem(BUILDING_COMMENTS_KEY, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+    setBuildingDraftText("");
+    setBuildingCommentError("");
+  };
+  const handleDeleteBuildingComment = (commentId: string) => {
+    setBuildingComments((prev) => {
+      const next = prev.filter((c) => c.id !== commentId);
+      try {
+        localStorage.setItem(BUILDING_COMMENTS_KEY, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+  const activeBuildingComments = buildingComments
+    .filter((c) => c.buildingId === activeHotspotId)
+    .filter((c) => c.textLang === lang)
+    .filter((c) => c.perspective === buildingActivePerspective);
   const guidedPoints = guidedTour ? normalizeGuidedTourPoints(guidedTour.points) : [];
   const guidedWalkAdj = campusWalkAdjacency();
   const guidedPolyline = (() => {
@@ -720,6 +812,9 @@ export function PicturesAndMapScreen() {
   useEffect(() => {
     stopBuildingSpeech();
     setMascotGuideOpen(false);
+    setBuildingActivePerspective("freshman");
+    setBuildingDraftText("");
+    setBuildingCommentError("");
   }, [activeHotspotId]);
 
   useEffect(() => {
@@ -1347,6 +1442,141 @@ export function PicturesAndMapScreen() {
                   <div style={{ backgroundColor: C.cream, border: `1.5px solid ${C.pale}`, borderRadius: "8px", padding: "6px 8px" }}>
                     <p style={{ fontSize: "10px", color: "#4B6898", fontWeight: 700 }}>{mapCopy.bestFor}</p>
                     <p style={{ fontSize: "11px", color: C.navy, fontWeight: 800, marginTop: "1px", lineHeight: 1.45 }}>{activeLocation?.bestFor ?? "-"}</p>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: "10px", borderTop: `1.5px solid ${C.pale}`, paddingTop: "10px" }}>
+                  <p style={{ fontSize: "12px", fontWeight: 900, color: C.navy, marginBottom: "8px" }}>
+                    {lang === "zh" ? "💬 楼宇评论" : "💬 Building Comments"}
+                  </p>
+
+                  <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                    <button
+                      type="button"
+                      onClick={() => setBuildingActivePerspective("freshman")}
+                      style={{
+                        flex: 1,
+                        height: "32px",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        backgroundColor: buildingActivePerspective === "freshman" ? C.royal : C.white,
+                        color: buildingActivePerspective === "freshman" ? C.white : "#4B6898",
+                        border: `2px solid ${C.navy}`,
+                        boxShadow: buildingActivePerspective === "freshman" ? `2px 2px 0 ${C.navy}` : `1.5px 1.5px 0 ${C.pale}`,
+                        fontSize: "11px",
+                        fontWeight: 900,
+                      }}
+                    >
+                      🌱 {lang === "zh" ? "新生" : "Freshman"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBuildingActivePerspective("visitor")}
+                      style={{
+                        flex: 1,
+                        height: "32px",
+                        borderRadius: "10px",
+                        cursor: "pointer",
+                        backgroundColor: buildingActivePerspective === "visitor" ? C.royal : C.white,
+                        color: buildingActivePerspective === "visitor" ? C.white : "#4B6898",
+                        border: `2px solid ${C.navy}`,
+                        boxShadow: buildingActivePerspective === "visitor" ? `2px 2px 0 ${C.navy}` : `1.5px 1.5px 0 ${C.pale}`,
+                        fontSize: "11px",
+                        fontWeight: 900,
+                      }}
+                    >
+                      🌍 {lang === "zh" ? "访客" : "Visitor"}
+                    </button>
+                  </div>
+
+                  <textarea
+                    value={buildingDraftText}
+                    onChange={(e) => {
+                      setBuildingDraftText(e.target.value);
+                      if (buildingCommentError) setBuildingCommentError("");
+                    }}
+                    rows={2}
+                    placeholder={lang === "zh" ? "写下你对这栋楼的体验或建议" : "Share your tips for this building"}
+                    style={{
+                      width: "100%",
+                      border: `2px solid ${C.navy}`,
+                      borderRadius: "10px",
+                      padding: "8px 10px",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      color: C.navy,
+                      resize: "none",
+                      outline: "none",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "7px" }}>
+                    <button
+                      type="button"
+                      onClick={handlePostBuildingComment}
+                      style={{
+                        height: "30px",
+                        padding: "0 12px",
+                        borderRadius: "9px",
+                        cursor: "pointer",
+                        backgroundColor: C.royal,
+                        border: `2px solid ${C.navy}`,
+                        boxShadow: `2px 2px 0 ${C.navy}`,
+                        color: C.white,
+                        fontSize: "11px",
+                        fontWeight: 900,
+                      }}
+                    >
+                      {lang === "zh" ? "发布" : "Post"}
+                    </button>
+                  </div>
+                  {buildingCommentError && (
+                    <p style={{ marginTop: "6px", marginBottom: "4px", fontSize: "11px", fontWeight: 800, color: C.coral }}>
+                      {buildingCommentError}
+                    </p>
+                  )}
+
+                  <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "6px", maxHeight: "180px", overflowY: "auto", paddingRight: "3px" }}>
+                    {activeBuildingComments.length === 0 ? (
+                      <div style={{ backgroundColor: C.cream, border: `1.5px dashed ${C.pale}`, borderRadius: "10px", padding: "8px" }}>
+                        <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", margin: 0 }}>
+                          {lang === "zh" ? "该视角下还没有评论，欢迎第一个留言～" : "No comments yet in this perspective."}
+                        </p>
+                      </div>
+                    ) : (
+                      activeBuildingComments.map((c) => (
+                        <div key={c.id} style={{ backgroundColor: C.white, border: `1.5px solid ${C.pale}`, borderRadius: "10px", padding: "8px" }}>
+                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "8px" }}>
+                            <div style={{ minWidth: 0, flex: 1 }}>
+                              <p style={{ fontSize: "12px", fontWeight: 800, color: C.navy, marginBottom: "4px", wordBreak: "break-word" }}>
+                                {c.text}
+                              </p>
+                              <p style={{ fontSize: "10px", fontWeight: 700, color: "#4B6898", margin: 0 }}>
+                                {formatCommentTime(c.createdAt)}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteBuildingComment(c.id)}
+                              aria-label={lang === "zh" ? "删除评论" : "Delete comment"}
+                              style={{
+                                width: "24px",
+                                height: "24px",
+                                borderRadius: "8px",
+                                border: `1.5px solid ${C.navy}`,
+                                backgroundColor: C.white,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <IconTrash size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
