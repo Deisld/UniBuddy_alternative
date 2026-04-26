@@ -20,6 +20,7 @@ import {
 import {
   ONBOARDING_AI_STEP,
   ONBOARDING_EVENT_NAME,
+  ONBOARDING_LANG_STEP,
   getOnboardingStep,
   setOnboardingStep,
 } from "../onboardingState";
@@ -100,8 +101,11 @@ export function HomeScreen() {
   const [aiLoading, setAiLoading] = useState(false);
   const [showAiBuddy, setShowAiBuddy] = useState(false);
   const [showAiGuide, setShowAiGuide] = useState(false);
+  const [showLangGuide, setShowLangGuide] = useState(false);
   const [aiGuideRect, setAiGuideRect] = useState<DOMRect | null>(null);
+  const [langGuideRect, setLangGuideRect] = useState<DOMRect | null>(null);
   const aiGuideCardRef = useRef<HTMLDivElement | null>(null);
+  const langToggleRef = useRef<HTMLButtonElement | null>(null);
   const aiInputRef = useRef<HTMLTextAreaElement>(null);
   const aiPresetQuestions = useMemo(() => getUniAIBuddyPresetQuestions(lang, 4), [lang]);
 
@@ -127,16 +131,18 @@ export function HomeScreen() {
   }, [showAiBuddy]);
 
   useEffect(() => {
-    const syncAiGuide = () => {
-      setShowAiGuide(getOnboardingStep() === ONBOARDING_AI_STEP);
+    const syncOnboardingUi = () => {
+      const step = getOnboardingStep();
+      setShowAiGuide(step === ONBOARDING_AI_STEP);
+      setShowLangGuide(step === ONBOARDING_LANG_STEP);
     };
 
-    syncAiGuide();
-    window.addEventListener("storage", syncAiGuide);
-    window.addEventListener(ONBOARDING_EVENT_NAME, syncAiGuide);
+    syncOnboardingUi();
+    window.addEventListener("storage", syncOnboardingUi);
+    window.addEventListener(ONBOARDING_EVENT_NAME, syncOnboardingUi);
     return () => {
-      window.removeEventListener("storage", syncAiGuide);
-      window.removeEventListener(ONBOARDING_EVENT_NAME, syncAiGuide);
+      window.removeEventListener("storage", syncOnboardingUi);
+      window.removeEventListener(ONBOARDING_EVENT_NAME, syncOnboardingUi);
     };
   }, []);
 
@@ -163,6 +169,55 @@ export function HomeScreen() {
       scrollContainer?.removeEventListener("scroll", updateGuideRect);
     };
   }, [showAiGuide]);
+
+  useEffect(() => {
+    const updateLangRect = () => {
+      if (!showLangGuide) {
+        setLangGuideRect(null);
+        return;
+      }
+      setLangGuideRect(langToggleRef.current?.getBoundingClientRect() ?? null);
+    };
+
+    updateLangRect();
+    if (!showLangGuide) return;
+
+    window.addEventListener("resize", updateLangRect);
+    window.addEventListener("scroll", updateLangRect, true);
+
+    return () => {
+      window.removeEventListener("resize", updateLangRect);
+      window.removeEventListener("scroll", updateLangRect, true);
+    };
+  }, [showLangGuide]);
+
+  const langGuideBubbleStyle = useMemo(() => {
+    if (!langGuideRect || typeof window === "undefined") return null;
+    const phoneShellRect = langToggleRef.current
+      ?.closest('[data-phone-shell="true"]')
+      ?.getBoundingClientRect();
+    const bounds = phoneShellRect ?? {
+      left: 0,
+      top: 0,
+      right: window.innerWidth,
+      bottom: window.innerHeight,
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+    const width = Math.min(300, Math.max(248, bounds.width - 28));
+    const margin = 12;
+    const toggleCenterX = langGuideRect.left + langGuideRect.width / 2;
+    let left = toggleCenterX - width / 2;
+    left = Math.min(bounds.right - width - margin, Math.max(bounds.left + margin, left));
+    const top = langGuideRect.bottom + 12;
+    const pointerX = toggleCenterX - left - 9;
+    return { width, left, top, pointerX: Math.min(width - 22, Math.max(10, pointerX)) };
+  }, [langGuideRect]);
+
+  const closeLangGuide = () => {
+    setLangGuideRect(null);
+    setOnboardingStep(1);
+  };
 
   const closeAiGuide = () => {
     setShowAiGuide(false);
@@ -296,6 +351,8 @@ export function HomeScreen() {
 
             {/* Language toggle pill */}
             <button
+              ref={langToggleRef}
+              type="button"
               onClick={toggle}
               style={{
                 display: "flex", alignItems: "center",
@@ -1065,6 +1122,90 @@ export function HomeScreen() {
             </div>
           </div>
         </div>
+      )}
+
+      {showLangGuide && langGuideRect && langGuideBubbleStyle && (
+        <>
+          <div
+            style={{ position: "fixed", inset: 0, zIndex: 65, backgroundColor: "rgba(2, 6, 23, 0.42)" }}
+            onClick={closeLangGuide}
+            aria-hidden
+          />
+          <div
+            style={{
+              position: "fixed",
+              zIndex: 66,
+              top: langGuideRect.top - 8,
+              left: langGuideRect.left - 8,
+              width: langGuideRect.width + 16,
+              height: langGuideRect.height + 16,
+              borderRadius: "20px",
+              border: "3px solid #FFE066",
+              boxShadow: "0 0 0 9999px rgba(2, 6, 23, 0.28)",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              position: "fixed",
+              zIndex: 67,
+              width: langGuideBubbleStyle.width,
+              left: langGuideBubbleStyle.left,
+              top: langGuideBubbleStyle.top,
+              backgroundColor: C.white,
+              border: `2px solid ${C.navy}`,
+              borderRadius: "20px",
+              boxShadow: `6px 8px 0 rgba(14, 27, 77, 0.22), 4px 4px 0 ${C.navy}`,
+              padding: "16px 16px 14px",
+            }}
+            role="dialog"
+            aria-labelledby="lang-onboard-title"
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: -9,
+                left: langGuideBubbleStyle.pointerX,
+                width: 0,
+                height: 0,
+                borderLeft: "9px solid transparent",
+                borderRight: "9px solid transparent",
+                borderBottom: `9px solid ${C.white}`,
+              }}
+            />
+
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "12px" }}>
+              <span style={{ fontSize: "26px", lineHeight: 1, flexShrink: 0 }} aria-hidden>🌐</span>
+              <p id="lang-onboard-title" style={{ fontSize: "15px", fontWeight: 900, color: C.navy, margin: 0, lineHeight: 1.35 }}>
+                {t("home_lang_onboard_title")}
+              </p>
+            </div>
+            <p style={{ fontSize: "12px", fontWeight: 800, color: C.navy, margin: "0 0 6px", lineHeight: 1.45 }}>
+              {t("home_lang_onboard_body_zh")}
+            </p>
+            <p style={{ fontSize: "12px", fontWeight: 700, color: "#355087", margin: "0 0 14px", lineHeight: 1.45 }}>
+              {t("home_lang_onboard_body_en")}
+            </p>
+            <button
+              type="button"
+              onClick={closeLangGuide}
+              style={{
+                width: "100%",
+                height: "46px",
+                borderRadius: "14px",
+                border: `2px solid ${C.navy}`,
+                backgroundColor: C.royal,
+                color: C.white,
+                fontSize: "13px",
+                fontWeight: 900,
+                cursor: "pointer",
+                boxShadow: `3px 4px 0 ${C.navy}`,
+              }}
+            >
+              {t("home_lang_onboard_btn")}
+            </button>
+          </div>
+        </>
       )}
 
       {showAiGuide && aiGuideRect && aiGuideBubbleStyle && !showAiBuddy && (
