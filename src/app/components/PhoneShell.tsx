@@ -34,9 +34,9 @@ export function PhoneShell({
           width: "100%",
           backgroundColor: bg,
           fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-          borderRadius: "clamp(0px, 2vw, 28px)",
-          border: "3px solid #0E1B4D",
-          boxShadow: "0 18px 40px rgba(14, 27, 77, 0.18)",
+          borderRadius: 0,
+          border: "none",
+          boxShadow: "none",
         }}
       >
         {children}
