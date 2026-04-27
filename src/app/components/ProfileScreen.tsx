@@ -7,11 +7,11 @@ import { useCamera } from "../context/CameraContext";
 import { useLanguage } from "../context/LanguageContext";
 import { BADGE_DEFS } from "../data/stamps";
 import {
-  IconBadge, IconHeart, IconSparkle,
+  IconBadge, IconHeart, IconSparkle, IconProfile,
   IconPin, IconCheck,
 } from "./ComicIcons";
 import {
-  EGradCap, ECamera, ESparkle, EmojiDisplay,
+  ECamera, ESparkle, EmojiDisplay,
 } from "./AppEmojis";
 
 const C = {
@@ -101,7 +101,7 @@ export function ProfileScreen() {
                 boxShadow: `3px 3px 0 ${C.navy}`,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <EGradCap size={32} color={C.navy} />
+                <IconProfile size={32} active />
               </div>
               <div style={{ position: "absolute", bottom: "-4px", right: "-4px" }}>
                 <Burst size={22} color={C.yellow} text="LV3" textColor={C.navy} />
