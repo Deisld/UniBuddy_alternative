@@ -43,7 +43,7 @@ const routeResultsDefs: Record<string, {
     ],
   },
   store: {
-    id: "mystery-store", titleKey: "mystery_res_store", emoji: "🧃", taglineKey: "mystery_res_store_tag",
+    id: "mystery-store", titleKey: "mystery_res_store", emoji: "🥨", taglineKey: "mystery_res_store_tag",
     bg: "#C7DA8E", stopDot: C.navy,
     stops: [
       { nameKey: "stop_store_fb", note: "start", mapId: "fb" },
@@ -54,7 +54,7 @@ const routeResultsDefs: Record<string, {
     ],
   },
   shuttle: {
-    id: "mystery-shuttle", titleKey: "mystery_res_shuttle", emoji: "🛵", taglineKey: "mystery_res_shuttle_tag",
+    id: "mystery-shuttle", titleKey: "mystery_res_shuttle", emoji: "🚍", taglineKey: "mystery_res_shuttle_tag",
     bg: C.yellow, stopDot: C.navy,
     stops: [
       { nameKey: "stop_shuttle_channel_1", note: "start", mapId: "cb" },
@@ -72,7 +72,7 @@ const routeResultsDefs: Record<string, {
     ],
   },
   landmark: {
-    id: "mystery-landmark", titleKey: "mystery_res_landmark", emoji: "🗿", taglineKey: "mystery_res_landmark_tag",
+    id: "mystery-landmark", titleKey: "mystery_res_landmark", emoji: "🏫", taglineKey: "mystery_res_landmark_tag",
     bg: "#D2B5F5", stopDot: C.navy,
     stops: [
       { nameKey: "stop_landmark_fb_lawn_statue", note: "start", mapId: "fb" },
@@ -84,7 +84,7 @@ const routeResultsDefs: Record<string, {
     ],
   },
   study: {
-    id: "mystery-study", titleKey: "mystery_res_study", emoji: "🧠", taglineKey: "mystery_res_study_tag",
+    id: "mystery-study", titleKey: "mystery_res_study", emoji: "📖", taglineKey: "mystery_res_study_tag",
     bg: C.pale, stopDot: C.royal,
     stops: [
       { nameKey: "stop_study_daily_cb", note: "start", mapId: "cb" },
