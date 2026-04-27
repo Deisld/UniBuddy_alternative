@@ -7,6 +7,7 @@ import { useLanguage } from "../context/LanguageContext";
 import {
   IconPlay, IconPin, IconHeart, IconBack,
 } from "./ComicIcons";
+import { EmojiDisplay } from "./AppEmojis";
 
 const C = {
   navy: "#0E1B4D", royal: "#2350D8", sky: "#4B9EF7", pale: "#A8D4FF",
@@ -135,7 +136,10 @@ export function MysteryRouteScreen() {
             </button>
             <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(255,255,255,0.7)" }}>{t("mystery_back")}</span>
           </div>
-          <h1 style={{ fontSize: "26px", fontWeight: 900, color: C.white, textShadow: `2px 2px 0 ${C.navy}` }}>🎲 {t("mystery_title")}</h1>
+          <h1 style={{ fontSize: "26px", fontWeight: 900, color: C.white, textShadow: `2px 2px 0 ${C.navy}`, display: "flex", alignItems: "center", gap: "8px" }}>
+            <EmojiDisplay emoji="🎲" size={26} />
+            {t("mystery_title")}
+          </h1>
           <p style={{ fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.7)", marginTop: "2px" }}>{t("mystery_subtitle")}</p>
         </div>
       </div>
