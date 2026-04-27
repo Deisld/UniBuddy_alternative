@@ -14,7 +14,7 @@ export function SplashScreen() {
   const { tPair } = useLanguage();
 
   const featureChips = [
-    { key: "splash_f1", icon: <IconCamera size={14} /> },
+    { key: "splash_f1", icon: <IconCamera size={14} color="#0E1B4D" /> },
     { key: "splash_f2", icon: <IconMap size={14} active /> },
     { key: "splash_f3", icon: <IconRoute size={14} active /> },
     { key: "splash_f4", icon: <IconBadge size={14} filled /> },
