@@ -169,7 +169,7 @@ export function SplashScreen() {
               {tPair("splash_subtitle").zh}
             </p>
             <p style={{ fontSize: "12px", fontWeight: 700, color: "#0E1B4D", margin: "6px 0 0", opacity: 0.88, lineHeight: 1.35 }}>
-              {tPair("splash_subtitle").en} 🗺️
+              {tPair("splash_subtitle").en} 
             </p>
           </div>
 
