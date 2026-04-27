@@ -1605,7 +1605,7 @@ export function HomeScreen() {
 function SectionLabel({ color, text, icon }: { color: string; text: string; icon?: React.ReactNode }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-      <div style={{ width: "4px", height: "18px", backgroundColor: color, border: "1.5px solid #0E1B4D", borderRadius: "2px" }} />
+      <div style={{ width: "4px", height: "18px", backgroundColor: color, border: "none", borderRadius: "2px" }} />
       <span style={{ fontSize: "13px", fontWeight: 800, color: "#0E1B4D" }}>{text}</span>
       {icon}
     </div>
