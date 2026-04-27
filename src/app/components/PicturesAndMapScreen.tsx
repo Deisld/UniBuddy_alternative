@@ -2111,34 +2111,36 @@ export function PicturesAndMapScreen() {
 
                       </ComicCard>
 
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-                        <div style={{ width: "4px", height: "18px", backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`, borderRadius: "2px" }} />
-                        <span style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>{t("map_floor_nav")}</span>
+                      <div style={{ backgroundColor: "#DDEEFF", borderRadius: "14px", padding: "10px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+                          <div style={{ width: "4px", height: "18px", backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`, borderRadius: "2px" }} />
+                          <span style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>{t("map_floor_nav")}</span>
+                        </div>
+
+                        <ComicCard style={{ padding: "14px", marginBottom: "12px", backgroundColor: selected.access === "elevator" ? C.pale : selected.access === "stairs" ? "#E8D5FF" : C.mint + "55" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div style={{ width: "46px", height: "46px", flexShrink: 0, backgroundColor: C.white, border: `2.5px solid ${C.navy}`, borderRadius: "14px", boxShadow: `3px 3px 0 ${C.navy}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>
+                              {selected.access === "elevator" ? "🛗" : selected.access === "stairs" ? "🪜" : "🚶"}
+                            </div>
+                            <div>
+                              <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898" }}>
+                                {selected.access === "elevator" ? t("map_elev") : selected.access === "stairs" ? t("map_stairs") : t("map_no_elev")}
+                              </p>
+                              <p style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>{locale.accessDetail}</p>
+                            </div>
+                          </div>
+                        </ComicCard>
+
+                        <ComicCard style={{ padding: "14px", backgroundColor: C.ice }}>
+                          <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                            <span style={{ fontSize: "22px", flexShrink: 0 }}>📌</span>
+                            <div>
+                              <p style={{ fontSize: "12px", fontWeight: 700, color: "#4B6898", marginBottom: "4px" }}>{t("map_arrive")}</p>
+                              <p style={{ fontSize: "13px", fontWeight: 800, color: C.navy, lineHeight: 1.5 }}>{locale.floorGuide}</p>
+                            </div>
+                          </div>
+                        </ComicCard>
                       </div>
-
-                      <ComicCard style={{ padding: "14px", marginBottom: "12px", backgroundColor: selected.access === "elevator" ? C.pale : selected.access === "stairs" ? "#E8D5FF" : C.mint + "55" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div style={{ width: "46px", height: "46px", flexShrink: 0, backgroundColor: C.white, border: `2.5px solid ${C.navy}`, borderRadius: "14px", boxShadow: `3px 3px 0 ${C.navy}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" }}>
-                            {selected.access === "elevator" ? "🛗" : selected.access === "stairs" ? "🪜" : "🚶"}
-                          </div>
-                          <div>
-                            <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898" }}>
-                              {selected.access === "elevator" ? t("map_elev") : selected.access === "stairs" ? t("map_stairs") : t("map_no_elev")}
-                            </p>
-                            <p style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>{locale.accessDetail}</p>
-                          </div>
-                        </div>
-                      </ComicCard>
-
-                      <ComicCard style={{ padding: "14px", backgroundColor: C.ice }}>
-                        <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                          <span style={{ fontSize: "22px", flexShrink: 0 }}>📌</span>
-                          <div>
-                            <p style={{ fontSize: "12px", fontWeight: 700, color: "#4B6898", marginBottom: "4px" }}>{t("map_arrive")}</p>
-                            <p style={{ fontSize: "13px", fontWeight: 800, color: C.navy, lineHeight: 1.5 }}>{locale.floorGuide}</p>
-                          </div>
-                        </div>
-                      </ComicCard>
 
                     </div>
                   )}
