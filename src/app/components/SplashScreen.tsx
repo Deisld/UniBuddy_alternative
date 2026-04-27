@@ -41,7 +41,7 @@ export function SplashScreen() {
           position: "relative",
           overflow: "hidden",
           borderRadius: "clamp(0px, 2vw, 28px)",
-          border: "3px solid #0E1B4D",
+          border: "none",
           boxShadow: "0 18px 40px rgba(14, 27, 77, 0.18)",
           ...dotsBg,
         }}
@@ -55,7 +55,7 @@ export function SplashScreen() {
             right: 0,
             height: "clamp(320px, 42vh, 420px)",
             backgroundColor: "#2350D8",
-            borderBottom: "3px solid #0E1B4D",
+            borderBottom: "none",
             overflow: "hidden",
           }}
         >
@@ -63,9 +63,9 @@ export function SplashScreen() {
           <div style={{ ...dotsBg, position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, #ffffff22 1.2px, transparent 1.2px)" }} />
 
           {/* Decorative circles */}
-          <div style={{ position: "absolute", top: "-60px", right: "-60px", width: "200px", height: "200px", borderRadius: "50%", backgroundColor: "#4B9EF7", border: "3px solid #0E1B4D" }} />
-          <div style={{ position: "absolute", top: "30px", right: "20px", width: "100px", height: "100px", borderRadius: "50%", backgroundColor: "#A8D4FF", border: "3px solid #0E1B4D" }} />
-          <div style={{ position: "absolute", bottom: "40px", left: "-30px", width: "120px", height: "120px", borderRadius: "50%", backgroundColor: "#4B9EF7", border: "3px solid #0E1B4D" }} />
+          <div style={{ position: "absolute", top: "-60px", right: "-60px", width: "200px", height: "200px", borderRadius: "50%", backgroundColor: "#4B9EF7", border: "none" }} />
+          <div style={{ position: "absolute", top: "30px", right: "20px", width: "100px", height: "100px", borderRadius: "50%", backgroundColor: "#A8D4FF", border: "none" }} />
+          <div style={{ position: "absolute", bottom: "40px", left: "-30px", width: "120px", height: "120px", borderRadius: "50%", backgroundColor: "#4B9EF7", border: "none" }} />
         </div>
 
         {/* ── Burst decorations ── */}
@@ -86,7 +86,7 @@ export function SplashScreen() {
               width: "clamp(112px, 24vw, 130px)",
               height: "clamp(112px, 24vw, 130px)",
               backgroundColor: "#FFFBF0",
-              border: "3px solid #0E1B4D",
+              border: "none",
               borderRadius: "32px",
               boxShadow: "5px 5px 0px #0E1B4D",
               display: "flex",
@@ -107,7 +107,7 @@ export function SplashScreen() {
             right: 0,
             height: "clamp(400px, 46vh, 460px)",
             backgroundColor: "#FFFBF0",
-            borderTop: "3px solid #0E1B4D",
+            borderTop: "none",
             borderTopLeftRadius: "32px",
             borderTopRightRadius: "32px",
             padding: "clamp(32px, 5vw, 40px) clamp(20px, 5vw, 28px) 28px",
@@ -122,7 +122,7 @@ export function SplashScreen() {
               alignItems: "center",
               gap: "6px",
               backgroundColor: "#A8D4FF",
-              border: "2px solid #0E1B4D",
+              border: "none",
               borderRadius: "20px",
               padding: "4px 12px",
               marginBottom: "14px",
@@ -206,7 +206,7 @@ export function SplashScreen() {
                 key={f.key}
                 style={{
                   backgroundColor: "#DCF0FF",
-                  border: "2px solid #0E1B4D",
+                  border: "none",
                   borderRadius: "20px",
                   padding: "3px 10px",
                   fontSize: "12px",
