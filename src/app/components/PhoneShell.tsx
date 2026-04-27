@@ -320,15 +320,16 @@ export function ComicCard({
   className?: string;
   onClick?: () => void;
 }) {
+  const isClickable = typeof onClick === "function";
   return (
     <div
       className={className}
       onClick={onClick}
       style={{
         backgroundColor: "#FFFFFF",
-        border: "2.5px solid #0E1B4D",
+        border: isClickable ? "2.5px solid #0E1B4D" : "none",
         borderRadius: "16px",
-        boxShadow: "4px 4px 0px #0E1B4D",
+        boxShadow: isClickable ? "4px 4px 0px #0E1B4D" : "none",
         ...style,
       }}
     >
@@ -373,9 +374,9 @@ export function SpeechBubble({ children, style }: { children: ReactNode; style?:
       style={{
         position: "relative",
         backgroundColor: "#FFFFFF",
-        border: "2.5px solid #0E1B4D",
+        border: "none",
         borderRadius: "16px",
-        boxShadow: "3px 3px 0px #0E1B4D",
+        boxShadow: "none",
         padding: "10px 14px",
         ...style,
       }}
@@ -391,7 +392,7 @@ export function SpeechBubble({ children, style }: { children: ReactNode; style?:
           height: 0,
           borderLeft: "10px solid transparent",
           borderRight: "6px solid transparent",
-          borderTop: "14px solid #0E1B4D",
+          borderTop: "14px solid #FFFFFF",
         }}
       />
       <div
