@@ -2111,7 +2111,7 @@ export function PicturesAndMapScreen() {
 
                       </ComicCard>
 
-                      <div style={{ backgroundColor: "#DDEEFF", borderRadius: "14px", padding: "10px" }}>
+                      <div style={{ backgroundColor: "#DDEEFF", border: `1.5px solid ${C.pale}`, borderRadius: "14px", padding: "10px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
                           <div style={{ width: "4px", height: "18px", backgroundColor: C.yellow, border: `1.5px solid ${C.navy}`, borderRadius: "2px" }} />
                           <span style={{ fontSize: "13px", fontWeight: 800, color: C.navy }}>{t("map_floor_nav")}</span>
