@@ -208,7 +208,7 @@ export function CustomRouteScreen() {
             </button>
             <span style={{ fontSize: "12px", fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>{t("custom_back")}</span>
           </div>
-          <h1 style={{ fontSize: "26px", fontWeight: 900, color: C.white, textShadow: `2px 2px 0 ${C.navy}` }}>🧩 {t("custom_title")}</h1>
+          <h1 style={{ fontSize: "26px", fontWeight: 900, color: C.white, textShadow: `2px 2px 0 ${C.navy}` }}>{t("custom_title")}</h1>
           <p style={{ fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.85)", marginTop: "2px" }}>{t("custom_subtitle")}</p>
         </div>
       </div>
