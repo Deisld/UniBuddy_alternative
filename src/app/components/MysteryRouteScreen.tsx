@@ -150,7 +150,7 @@ export function MysteryRouteScreen() {
         {phase === "question" && (
           <>
             <div style={{ textAlign: "center", marginBottom: "16px" }}>
-              <div style={{ display: "inline-block", backgroundColor: C.yellow, border: `2.5px solid ${C.navy}`, borderRadius: "12px", padding: "8px 16px", boxShadow: `3px 3px 0 ${C.navy}` }}>
+              <div style={{ display: "inline-block", backgroundColor: C.yellow, border: "none", borderRadius: "12px", padding: "8px 16px", boxShadow: "none" }}>
                 <p style={{ fontSize: "16px", fontWeight: 900, color: C.navy }}>{t("mystery_q")}</p>
               </div>
               <p style={{ fontSize: "12px", fontWeight: 600, color: "#4B6898", marginTop: "8px" }}>{t("mystery_q_sub")}</p>
