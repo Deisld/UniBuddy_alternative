@@ -132,7 +132,7 @@ export const classrooms: Classroom[] = [
       accessDetail: "无需乘梯，1楼直接进入",
     },
     en: {
-      building: "Electronics Bldg (EE)", duration: "~4 min",
+      building: "Electronics Building (EE)", duration: "~4 min",
       steps: ["📍 From your current location", "➡️ Head northeast ~100 m", "🏛️ Arrive at EE main entrance"],
       floorGuide: "Floor 1. Turn left after entering the main entrance.",
       accessDetail: "No elevator needed — direct entry on Floor 1",
@@ -147,7 +147,7 @@ export const classrooms: Classroom[] = [
       accessDetail: "建议走EE楼北侧楼梯（正门右转）至2楼，无电梯",
     },
     en: {
-      building: "Electronics Bldg (EE)", duration: "~5 min",
+      building: "Electronics Building (EE)", duration: "~5 min",
       steps: ["📍 From your current location", "➡️ Head northeast ~100 m", "🏛️ Arrive at EE main entrance", "⬆️ Go to Floor 2"],
       floorGuide: "Floor 2. Turn right from stairwell; 2nd room.",
       accessDetail: "Use the north staircase in EE Building (turn right from main entrance) to Floor 2 — no elevator",
@@ -225,7 +225,7 @@ export const classrooms: Classroom[] = [
       building: "Engineering Building (EE)", duration: "~5 min",
       steps: ["📍 From your current location", "➡️ Turn right ~80 m", "🏛️ Arrive at ES main entrance", "⬆️ Go to Floor 2"],
       floorGuide: "Floor 2 Lab. Turn left from stairwell; 4th room.",
-      accessDetail: "Use the main staircase in EE Bldg (right of main entrance) to Floor 2 — no elevator available",
+      accessDetail: "Use the main staircase in EE Building (right of main entrance) to Floor 2 — no elevator available",
     },
   },
 ];
