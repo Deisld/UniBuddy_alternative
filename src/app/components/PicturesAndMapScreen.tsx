@@ -981,6 +981,7 @@ export function PicturesAndMapScreen() {
     }, 1800);
   };
 
+  const normalizeBuildingName = (text: string) => text.replace(/科技楼/g, "理科楼");
   const getLocale = (room: typeof classrooms[0]) => room[lang];
 
   const filtered = query.trim().length > 0
