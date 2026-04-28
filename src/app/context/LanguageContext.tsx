@@ -41,7 +41,7 @@ const zh: Texts = {
   home_lang_onboard_keep_en: "保持英文",
   home_about_title: "关于 XJTLU",
   home_about_text: "西交利物浦大学坐落于苏州工业园区，融汇中西方教育精华，是中英合办的国际化研究型大学。",
-  home_search_title: "搜索教室", home_search_ph: "输入教室号或楼栋，如 SA101 / 科技楼",
+  home_search_title: "搜索教室", home_search_ph: "输入教室号或楼栋，如 SA101 / 理科楼",
   home_search_hint: "💡 支持搜索教室号或楼栋名称",
   home_not_found: "未找到相关教室", home_not_found_sub: "请尝试其他关键词",
   home_start_nav: "✅ 开始导航",
@@ -54,7 +54,7 @@ const zh: Texts = {
   map_title: "图片 & 地图", map_subtitle: "校园风光与导航",
   map_photos: "校园图片", map_map: "校园地图",
   map_tab_map: "地图", map_tab_live: "实时定位", map_locating: "正在定位中…",
-  map_search: "搜索教室", map_search_ph: "输入教室号或楼栋，如 SA101 / 科技楼",
+  map_search: "搜索教室", map_search_ph: "输入教室号或楼栋，如 SA101 / 理科楼",
   map_hint: "💡 显示常用教室 · 输入关键词精准搜索",
   map_not_found: "未找到相关教室", map_not_found_sub: "请尝试其他关键词",
   map_more: "输入关键词搜索更多教室…", map_done: "让我们出发吧！",
@@ -290,8 +290,8 @@ const zh: Texts = {
   ocr_b_mb_intro: "数学楼 B 与数学楼 A 一起构成数学学科的教学双塔，便于连堂与自习。",
   ocr_b_gym_name: "体育馆 (GYM)",
   ocr_b_gym_intro: "体育馆满足篮球、羽球、健身等运动与体育课需求，是运动打卡的热门点。",
-  ocr_b_as_name: "影视与创意科技楼 (AS)",
-  ocr_b_as_intro: "影视与创意科技楼为传媒、创意与相关技术类课程与制作提供专业空间。",
+  ocr_b_as_name: "影视与创意理科楼 (AS)",
+  ocr_b_as_intro: "影视与创意理科楼为传媒、创意与相关技术类课程与制作提供专业空间。",
   // Error page
   error_unknown: "发生了未知错误",
   error_404: "找不到该页面",
@@ -618,6 +618,7 @@ const LangContext = createContext<LangContextValue>({
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("en");
   const toggle = () => setLang((l) => (l === "zh" ? "en" : "zh"));
+  const normalizeZhText = (text: string) => text.replace(/科技楼/g, "理科楼");
   const t = (key: string, vars?: Record<string, string | number>) => {
     const map = lang === "zh" ? zh : en;
     let str = map[key] ?? key;
@@ -626,9 +627,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         str = str.replace(`{${k}}`, String(v));
       });
     }
-    return str;
+    return lang === "zh" ? normalizeZhText(str) : str;
   };
-  const tPair = (key: string) => ({ zh: zh[key] ?? key, en: en[key] ?? key });
+  const tPair = (key: string) => ({ zh: normalizeZhText(zh[key] ?? key), en: en[key] ?? key });
   return <LangContext.Provider value={{ lang, toggle, t, tPair }}>{children}</LangContext.Provider>;
 }
 
