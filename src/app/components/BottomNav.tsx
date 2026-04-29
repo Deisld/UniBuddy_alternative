@@ -18,7 +18,7 @@ import {
 } from "../onboardingState";
 
 type TabName = "Home" | "Map" | "Route" | "Profile" | "Camera";
-const NAV_GUIDE_MAX_STEP = 4;
+const NAV_GUIDE_MAX_STEP = 5;
 
 interface BottomNavProps {
   activeTab: TabName;
@@ -76,6 +76,7 @@ export function BottomNav({ activeTab }: BottomNavProps) {
     () => [
       { id: "Home" as TabName, description: t("nav_guide_home_desc") },
       { id: "Map" as TabName, description: t("nav_guide_map_desc") },
+      { id: "Camera" as TabName, description: t("nav_guide_camera_desc") },
       { id: "Route" as TabName, description: t("nav_guide_route_desc") },
       { id: "Profile" as TabName, description: t("nav_guide_profile_desc") },
     ],
