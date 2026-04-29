@@ -16,7 +16,10 @@ function figmaAssetResolver() {
 }
 
 export default defineConfig({
-  base: '/',
+  base:
+    process.env.GITHUB_ACTIONS === 'true' && process.env.GITHUB_REPOSITORY
+      ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/`
+      : '/',
   plugins: [
     figmaAssetResolver(),
     react(),
