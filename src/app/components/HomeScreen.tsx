@@ -559,8 +559,8 @@ export function HomeScreen() {
                   </p>
                   <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.45 }}>
                     {lang === "zh"
-                      ? "弹窗中可连续对话，基于知识库检索 + DeepSeek 回答。"
-                      : "Chat in a popup with multi-turn context, knowledge retrieval + DeepSeek."}
+                      ? "可以询问本系统相关问题。"
+                      : "You can ask questions related to this system."}
                   </p>
                 </div>
               </div>
