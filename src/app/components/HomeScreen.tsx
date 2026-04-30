@@ -134,7 +134,8 @@ export function HomeScreen() {
   const aiGuideCardRef = useRef<HTMLDivElement | null>(null);
   const langToggleRef = useRef<HTMLButtonElement | null>(null);
   const aiInputRef = useRef<HTMLTextAreaElement>(null);
-  const aiPresetQuestions = useMemo(() => getUniAIBuddyPresetQuestions(lang, 4), [lang]);
+  const aiMessagesScrollRef = useRef<HTMLDivElement | null>(null);
+  const aiPresetQuestions = useMemo(() => getUniAIBuddyPresetQuestions(lang, 24), [lang]);
 
   const handleAskUniAIBuddy = async (presetQuestion?: string) => {
     const q = (presetQuestion ?? aiQuestion).trim();
@@ -156,6 +157,13 @@ export function HomeScreen() {
     const timer = window.setTimeout(() => aiInputRef.current?.focus(), 120);
     return () => window.clearTimeout(timer);
   }, [showAiBuddy]);
+
+  useEffect(() => {
+    if (!showAiBuddy) return;
+    const container = aiMessagesScrollRef.current;
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  }, [aiMessages, aiLoading, showAiBuddy]);
 
   useEffect(() => {
     const syncOnboardingUi = () => {
@@ -551,8 +559,8 @@ export function HomeScreen() {
                   </p>
                   <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.45 }}>
                     {lang === "zh"
-                      ? "弹窗中可连续对话，基于知识库检索 + DeepSeek 回答。"
-                      : "Chat in a popup with multi-turn context, knowledge retrieval + DeepSeek."}
+                      ? "可以询问本系统相关问题。"
+                      : "You can ask questions related to this system."}
                   </p>
                 </div>
               </div>
@@ -1327,37 +1335,15 @@ export function HomeScreen() {
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#F7FAFF", padding: "10px", display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div
+              ref={aiMessagesScrollRef}
+              style={{ flex: 1, overflowY: "auto", backgroundColor: "#F7FAFF", padding: "10px", display: "flex", flexDirection: "column", gap: "8px" }}
+            >
               {aiMessages.length === 0 && (
                 <div style={{ backgroundColor: C.white, border: `1.5px solid ${C.pale}`, borderRadius: "10px", padding: "8px 10px" }}>
                   <p style={{ fontSize: "11px", fontWeight: 700, color: "#4B6898", lineHeight: 1.5 }}>
                     {lang === "zh" ? "你可以问我：怎么开始定位？怎么用盲盒路线？" : "Try asking: how to start live location? how to use mystery route?"}
                   </p>
-                  {aiPresetQuestions.length > 0 && (
-                    <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                      {aiPresetQuestions.map((question) => (
-                        <button
-                          key={question}
-                          type="button"
-                          disabled={aiLoading}
-                          onClick={() => void handleAskUniAIBuddy(question)}
-                          style={{
-                            border: `1.5px solid ${C.sky}`,
-                            borderRadius: "999px",
-                            padding: "4px 9px",
-                            fontSize: "11px",
-                            fontWeight: 700,
-                            color: aiLoading ? "#6E7FA8" : C.royal,
-                            backgroundColor: aiLoading ? "#E7EEF9" : "#EEF5FF",
-                            cursor: aiLoading ? "not-allowed" : "pointer",
-                            lineHeight: 1.35,
-                          }}
-                        >
-                          {question}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
               {aiMessages.map((msg, idx) => (
@@ -1388,33 +1374,81 @@ export function HomeScreen() {
             </div>
 
             <div style={{ borderTop: `2px solid ${C.pale}`, padding: "10px", backgroundColor: C.white }}>
-              <textarea
-                ref={aiInputRef}
-                value={aiQuestion}
-                onChange={(e) => setAiQuestion(e.target.value)}
-                rows={2}
-                placeholder={lang === "zh" ? "输入问题，Ctrl/Cmd + Enter 发送" : "Type your question, Ctrl/Cmd + Enter to send"}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-                    e.preventDefault();
-                    void handleAskUniAIBuddy();
-                  }
-                }}
-                style={{
-                  width: "100%",
-                  backgroundColor: C.white,
-                  border: `2px solid ${C.navy}`,
-                  borderRadius: "10px",
-                  padding: "8px 10px",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  color: C.navy,
-                  outline: "none",
-                  resize: "none",
-                  boxSizing: "border-box",
-                }}
-              />
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}>
+              {aiPresetQuestions.length > 0 && (
+                <div style={{ marginBottom: "10px" }}>
+                  <p style={{ fontSize: "10px", fontWeight: 800, color: "#4B6898", margin: "0 0 6px 2px" }}>
+                    {lang === "zh" ? "高频问题推荐 · 左滑查看更多" : "Suggested questions · swipe sideways for more"}
+                  </p>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      overflowX: "auto",
+                      paddingBottom: "4px",
+                      WebkitOverflowScrolling: "touch",
+                      scrollbarWidth: "thin",
+                      margin: "0 -2px",
+                      paddingLeft: "2px",
+                      paddingRight: "2px",
+                    }}
+                  >
+                    {aiPresetQuestions.map((question) => (
+                      <button
+                        key={question}
+                        type="button"
+                        disabled={aiLoading}
+                        onClick={() => void handleAskUniAIBuddy(question)}
+                        style={{
+                          flex: "0 0 auto",
+                          maxWidth: "min(240px, 78vw)",
+                          border: `1.5px solid ${C.sky}`,
+                          borderRadius: "12px",
+                          padding: "6px 10px",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          color: aiLoading ? "#6E7FA8" : C.royal,
+                          backgroundColor: aiLoading ? "#E7EEF9" : "#EEF5FF",
+                          cursor: aiLoading ? "not-allowed" : "pointer",
+                          lineHeight: 1.35,
+                          textAlign: "left",
+                          whiteSpace: "normal",
+                        }}
+                      >
+                        {question}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "8px" }}>
+                <textarea
+                  ref={aiInputRef}
+                  value={aiQuestion}
+                  onChange={(e) => setAiQuestion(e.target.value)}
+                  rows={1}
+                  placeholder={lang === "zh" ? "输入问题，Ctrl/Cmd + Enter 发送" : "Type your question, Ctrl/Cmd + Enter to send"}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                      e.preventDefault();
+                      void handleAskUniAIBuddy();
+                    }
+                  }}
+                  style={{
+                    flex: 1,
+                    minHeight: "34px",
+                    maxHeight: "74px",
+                    backgroundColor: C.white,
+                    border: `2px solid ${C.navy}`,
+                    borderRadius: "10px",
+                    padding: "7px 10px",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: C.navy,
+                    outline: "none",
+                    resize: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
                 <button
                   type="button"
                   onClick={() => void handleAskUniAIBuddy()}
